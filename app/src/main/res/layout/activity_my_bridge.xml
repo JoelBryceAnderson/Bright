@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="joelbryceanderson.com.bright.Activities.GroupPickerActivity">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context="joelbryceanderson.com.bright.MainActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_bridge"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_margin="16dp"
+                android:id="@+id/my_bridge_card_view"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/bridge_image"
+                        android:src="@drawable/hue_bridge_1"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_margin="16dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/colorPrimaryText"
+                        android:id="@+id/my_bridge_text"
+                        android:text="My Bridge"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:background="@color/colorAccent"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="12sp"
+                        android:id="@+id/bridge_id_text"
+                        android:text="Bridge ID: "
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="12sp"
+                        android:id="@+id/model_id_text"
+                        android:text="Model ID: "
+                        android:layout_height="wrap_content" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingLeft="16dp"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:textColor="@color/colorSecondaryText"
+                            android:textSize="12sp"
+                            android:id="@+id/ip_address_text"
+                            android:text="IP Address: "
+                            android:layout_height="wrap_content" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:src="@drawable/ic_edit"
+                            android:layout_alignParentRight="true"
+                            android:id="@+id/edit_ip_button"
+                            android:layout_height="wrap_content" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="12sp"
+                        android:id="@+id/mac_address_text"
+                        android:text="MAC Address: "
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="12sp"
+                        android:id="@+id/gateway_text"
+                        android:text="Gateway: "
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="12sp"
+                        android:id="@+id/api_version_text"
+                        android:text="API Version: "
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="12sp"
+                        android:id="@+id/software_version_text"
+                        android:text="Software Version: "
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="12sp"
+                        android:id="@+id/zigbee_channel_text"
+                        android:text="Zigbee Channel: "
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:text="Forget this Bridge"
+                        android:id="@+id/forget_bridge_button"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </ScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</RelativeLayout>

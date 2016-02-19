@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="joelbryceanderson.com.bright.Activities.GroupPickerActivity">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context="joelbryceanderson.com.bright.Act">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_alarm_picker"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:id="@+id/is_on_layout"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/circle_color_alarm_picker"
+                    android:src="@drawable/circle_color"
+                    android:layout_height="50dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_height="wrap_content">
+
+                    <Switch
+                        android:layout_width="match_parent"
+                        android:text="Turn lights on"
+                        android:textSize="16sp"
+                        android:id="@+id/turn_lights_on_switch_alarm_picker"
+                        android:checked="true"
+                        android:layout_height="wrap_content" />
+
+                    <Switch
+                        android:layout_width="match_parent"
+                        android:text="Repeat"
+                        android:textSize="16sp"
+                        android:layout_marginTop="16dp"
+                        android:id="@+id/switch_repeating"
+                        android:checked="false"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_below="@+id/is_on_layout"
+                android:id="@+id/days_of_week_layout"
+                android:weightSum="7"
+                android:visibility="gone"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:textSize="25sp"
+                    android:text="S"
+                    android:gravity="center"
+                    android:id="@+id/sunday"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:textSize="25sp"
+                    android:text="M"
+                    android:id="@+id/monday"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:textSize="25sp"
+                    android:text="T"
+                    android:id="@+id/tuesday"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:textSize="25sp"
+                    android:text="W"
+                    android:id="@+id/wednesday"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:textSize="25sp"
+                    android:text="T"
+                    android:id="@+id/thursday"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:textSize="25sp"
+                    android:text="F"
+                    android:id="@+id/friday"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:textSize="25sp"
+                    android:text="S"
+                    android:id="@+id/saturday"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/alarm_picker_recycler"
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:layout_below="@+id/days_of_week_layout"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_done_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_done" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</RelativeLayout>
