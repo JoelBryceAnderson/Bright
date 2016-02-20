@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     public static final String TAG = "BrightApp";
     private FloatingActionButton fab;
     private Boolean darkMode;
+    private int currentlySelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +69,31 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        displayView(R.id.nav_lights);
-        setFabAction(0);
+
+        boolean groupsOnStartup = prefs.getBoolean("groups_on_startup", false);
+        if (groupsOnStartup) {
+            currentlySelected = 1;
+        } else {
+            currentlySelected = 0;
+        }
+
+        if (savedInstanceState != null) {
+            currentlySelected = savedInstanceState.getInt("currentFrag");
+        }
+
+        setFabAction(currentlySelected);
+        displayView(navigationView.getMenu().getItem(currentlySelected).getItemId());
+        navigationView.getMenu().getItem(currentlySelected).setChecked(true);
+
         if (darkMode) {
             fab.setImageTintList(ColorStateList.valueOf(Color.BLACK));
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currentFrag", currentlySelected);
     }
 
     @Override
@@ -106,24 +127,24 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     fab.setImageResource(R.drawable.ic_lightbulb_open);
                 }
+                currentlySelected = 0;
                 break;
             case R.id.nav_groups:
                 fragment = new GroupsFragment();
                 title = "Groups";
                 fab.setImageResource(R.drawable.ic_plus);
                 setFabAction(1);
+                currentlySelected = 1;
                 break;
             case R.id.nav_alarms:
                 fragment = new AlarmsFragment();
                 title = "Alarms";
                 fab.setImageResource(R.drawable.ic_plus);
                 setFabAction(2);
+                currentlySelected = 2;
                 break;
-            case R.id.nav_bridge:
-                intent = new Intent(this, MyBridgeActivity.class);
-                break;
-            case R.id.nav_about:
-                intent = new Intent(this, AboutActivity.class);
+            case R.id.nav_settings:
+                intent = new Intent(this, SettingsActivity.class);
                 break;
         }
 

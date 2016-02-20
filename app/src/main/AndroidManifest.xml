@@ -7,9 +7,9 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupOnly="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:fullBackupOnly="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -38,13 +38,22 @@
         <activity
             android:name=".Activities.MyBridgeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.AlarmPickerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".Activities.AlarmPickerActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <meta-data android:name="com.google.android.backup.api_key"
+        <meta-data
+            android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIbmi9ZN2qae9tdiCmRDU-9pqmmyjgkWrQNG8vkg" />
 
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".Activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="joelbryceanderson.com.bright.Activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

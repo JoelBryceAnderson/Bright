@@ -10,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,7 +50,7 @@ public class MyBridgeActivity extends AppCompatActivity {
 
         //Set up the hue bridge
         PHHueSDK sdk = PHHueSDK.getStoredSDKObject();
-        PHBridge mBridge = sdk.getSelectedBridge();
+        final PHBridge mBridge = sdk.getSelectedBridge();
 
         //Set up views
         CardView cardView = (CardView) findViewById(R.id.my_bridge_card_view);
@@ -144,7 +147,83 @@ public class MyBridgeActivity extends AppCompatActivity {
         });
 
         //Set up the edit IP address button
-        ImageView editIp = (ImageView) findViewById(R.id.edit_ip_button);
+        final ImageView editIp = (ImageView) findViewById(R.id.edit_ip_button);
+        editIp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder areYouSure =
+                        new AlertDialog.Builder(MyBridgeActivity.this);
+                areYouSure.setTitle("Edit IP?");
+                areYouSure.setMessage("Editing the bridge IP address is for advanced users only." +
+                        " Would you like to continue?");
+                areYouSure.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Create dialog with text editor
+                        final AlertDialog editIpDialog = new AlertDialog.Builder(
+                                MyBridgeActivity.this).create();
+                        final EditText input = new EditText(MyBridgeActivity.this);
+                        input.setHint(mBridge.getResourceCache()
+                                .getBridgeConfiguration().getIpAddress());
+                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        input.setKeyListener(DigitsKeyListener.getInstance("0123456789."));
+                        editIpDialog.setTitle("Set IP Address");
+                        editIpDialog.setView(input);
+                        editIpDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                                "OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        final AlertDialog.Builder areYouSureAgain =
+                                                new AlertDialog.Builder(MyBridgeActivity.this);
+                                        areYouSureAgain.setTitle("Edit IP?");
+                                        areYouSureAgain.setMessage("This will restart the " +
+                                                "app with your new IP Address. Continue?");
+                                        areYouSureAgain.setPositiveButton("Yes",
+                                                new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        String newIP = input.getText().toString();
+                                                        HueSharedPreferences prefs = HueSharedPreferences.
+                                                                getInstance(getApplicationContext());
+                                                        prefs.setLastConnectedIPAddress(newIP);
+                                                        Intent i = getBaseContext().getPackageManager()
+                                                                .getLaunchIntentForPackage(
+                                                                        getBaseContext()
+                                                                                .getPackageName());
+                                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        startActivity(i);
+                                                    }
+                                                });
+                                        areYouSureAgain.setNegativeButton("No",
+                                                new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                        areYouSureAgain.show();
+                                    }
+                                });
+                        editIpDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+                                "Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editIpDialog.dismiss();
+                            }
+                        });
+                        editIpDialog.show();
+                    }
+                });
+                areYouSure.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                areYouSure.show();
+            }
+        });
     }
 
     @Override

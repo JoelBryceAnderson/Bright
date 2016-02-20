@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,7 +10,6 @@
     </style>
 
     <style name="AppThemeNight" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
         <item name="colorAccent">@color/colorAccentNight</item>
@@ -19,6 +17,7 @@
         <item name="android:timePickerDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
         <item name="android:windowBackground">@color/Black</item>
         <item name="drawerArrowStyle">@style/MyDrawerArrowToggle</item>
+        <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="MyDrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">

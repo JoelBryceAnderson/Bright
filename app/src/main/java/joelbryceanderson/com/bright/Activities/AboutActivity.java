@@ -37,26 +37,6 @@ public class AboutActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("About");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Handle the dark mode switch
-        Switch darkModeSwitch = (Switch) findViewById(R.id.dark_mode_switch);
-        darkModeSwitch.setChecked(darkMode);
-        darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    prefs.edit().putBoolean("dark_mode", true).commit();
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                } else {
-                    prefs.edit().putBoolean("dark_mode", false).commit();
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                }
-            }
-        });
-
         //Adjust View Colors for DarkMode
         if (darkMode) {
             CardView cardView = (CardView) findViewById(R.id.about_card);
@@ -67,7 +47,6 @@ public class AboutActivity extends AppCompatActivity {
             aboutAppName.setTextColor(Color.parseColor("#ffffff"));
             aboutAppCreator.setTextColor(Color.parseColor("#ffffff"));
             aboutAppVersion.setTextColor(Color.parseColor("#ffffff"));
-            darkModeSwitch.setTextColor(Color.parseColor("#ffffff"));
         }
     }
 

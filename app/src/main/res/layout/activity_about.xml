@@ -85,22 +85,9 @@
                         android:layout_marginLeft="16dp"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="12sp"
-                        android:text="Version 1.0.3"
+                        android:text="Version 1.0.5"
                         android:id="@+id/about_version"
                         android:layout_height="wrap_content" />
-
-                    <Switch
-                        android:layout_width="match_parent"
-                        android:text="Dark Mode"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:textColor="@color/colorSecondaryText"
-                        android:textSize="12sp"
-                        android:checked="false"
-                        android:id="@+id/dark_mode_switch"
-                        android:layout_height="wrap_content" />
-
 
                 </LinearLayout>
 

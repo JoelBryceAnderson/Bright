@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -53,7 +55,7 @@ public class AlarmsFragment extends android.support.v4.app.Fragment {
     private List<PHSchedule> scheduleList;
     private RecyclerViewAdapterAlarms adapter;
     private PHHueSDK phHueSDK;
-    private TextView noItemsText;
+    private CardView noItemsCard;
 
 
     public AlarmsFragment() {
@@ -73,7 +75,7 @@ public class AlarmsFragment extends android.support.v4.app.Fragment {
         super.onActivityCreated(savedInstanceState);
         recyclerView = (RecyclerView) getView().findViewById(R.id.alarms_recycler);
         frameLayout = (FrameLayout) getView().findViewById(R.id.alarms_frame_layout);
-        noItemsText = (TextView) getView().findViewById(R.id.no_alarms_text);
+        noItemsCard = (CardView) getView().findViewById(R.id.no_alarms_card);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -96,7 +98,7 @@ public class AlarmsFragment extends android.support.v4.app.Fragment {
             }
         });
         if (!scheduleList.isEmpty()) {
-            noItemsText.setVisibility(View.GONE);
+            noItemsCard.setVisibility(View.GONE);
         }
         List<PHGroup> groups = cache.getAllGroups();
         List<String> identifiersInUse = new ArrayList<>();
@@ -107,6 +109,15 @@ public class AlarmsFragment extends android.support.v4.app.Fragment {
             if (!identifiersInUse.contains(group.getIdentifier()) && group.getIdentifier().startsWith("name")) {
                 phHueSDK.getSelectedBridge().deleteGroup(group.getIdentifier(), null);
             }
+        }
+        final SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity().getApplicationContext());
+        if (prefs.getBoolean("dark_mode", false)) {
+            noItemsCard.setCardBackgroundColor(Color.parseColor("#263238"));
+            TextView mainText = (TextView) getView().findViewById(R.id.no_alarms_card_text);
+            TextView subText = (TextView) getView().findViewById(R.id.no_alarms_card_subtext);
+            mainText.setTextColor(Color.parseColor("#ffffff"));
+            subText.setTextColor(Color.parseColor("#ffffff"));
         }
     }
 
@@ -138,7 +149,7 @@ public class AlarmsFragment extends android.support.v4.app.Fragment {
             MainActivity parent = (MainActivity) getActivity();
             adapter = new RecyclerViewAdapterAlarms(scheduleList, parent.getBridge(), this);
             recyclerView.setAdapter(adapter);
-            noItemsText.setVisibility(View.GONE);
+            noItemsCard.setVisibility(View.GONE);
         }
     }
 
@@ -203,7 +214,7 @@ public class AlarmsFragment extends android.support.v4.app.Fragment {
             }
         });
         if (recyclerView.getChildCount() == 0) {
-            noItemsText.setVisibility(View.VISIBLE);
+            noItemsCard.setVisibility(View.VISIBLE);
         }
     }
 }
