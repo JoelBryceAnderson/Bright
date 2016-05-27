@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Bright.iml" filepath="$PROJECT_DIR$/Bright.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/brightwear/brightwear.iml" filepath="$PROJECT_DIR$/brightwear/brightwear.iml" />
     </modules>
   </component>
 </project>

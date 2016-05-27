@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Bright</string>
+    <string name="title_activity_color_change">ColorChangeActivity</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="long_press_intro">Long press to cancel.</string>
+    <string name="hello_square">Hello Square World!</string>
+    <string name="title_activity_brightness">BrightnessActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="no_groups">You don\'t have any groups yet.</string>
+</resources>

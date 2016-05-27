@@ -4,16 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -175,18 +171,15 @@ public class MainActivity extends AppCompatActivity
     public void setAllLightsBrightness(int brightness) {
         PHBridge bridge = phHueSDK.getSelectedBridge();
 
-        List<PHLight> allLights = bridge.getResourceCache().getAllLights();
-
-        for (PHLight light : allLights) {
-            PHLightState lightState = new PHLightState();
-            if (brightness > 0) {
-                lightState.setOn(true);
-                lightState.setBrightness(brightness);
-            } else {
-                lightState.setOn(false);
-            }
-            bridge.updateLightState(light, lightState);
+        PHLightState lightState = new PHLightState();
+        if (brightness > 0) {
+            lightState.setOn(true);
+            lightState.setBrightness(brightness);
+        } else {
+            lightState.setOn(false);
         }
+
+        bridge.setLightStateForDefaultGroup(lightState);
     }
 
     /**
@@ -222,21 +215,33 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(View view) {
                     if (lightsOff) {
-                        lightsOff = false;
-                        setAllLightsBrightness(250);
-                        fab.setImageDrawable(getDrawable(R.drawable.ic_lightbulb_open));
-                        Snackbar.make(view, "Turning all lights on", Snackbar.LENGTH_SHORT).show();
-                        LightsFragment fragment = (LightsFragment)
-                                getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-                        fragment.toggleAll(true);
+                        fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                            @Override
+                            public void onHidden(FloatingActionButton fab) {
+                                super.onHidden(fab);
+                                lightsOff = false;
+                                setAllLightsBrightness(250);
+                                fab.setImageDrawable(getDrawable(R.drawable.ic_lightbulb_open));
+                                LightsFragment fragment = (LightsFragment)
+                                        getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                                fragment.toggleAll(true);
+                                fab.show();
+                            }
+                        });
                     } else {
-                        lightsOff = true;
-                        setAllLightsBrightness(0);
-                        fab.setImageDrawable(getDrawable(R.drawable.ic_lightbulb));
-                        Snackbar.make(view, "Turning all lights off", Snackbar.LENGTH_SHORT).show();
-                        LightsFragment fragment = (LightsFragment)
-                                getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-                        fragment.toggleAll(false);
+                        fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                            @Override
+                            public void onHidden(FloatingActionButton fab) {
+                                super.onHidden(fab);
+                                lightsOff = true;
+                                setAllLightsBrightness(0);
+                                fab.setImageDrawable(getDrawable(R.drawable.ic_lightbulb));
+                                LightsFragment fragment = (LightsFragment)
+                                        getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                                fragment.toggleAll(false);
+                                fab.show();
+                            }
+                        });
                     }
                 }
             });
@@ -261,6 +266,11 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
+    }
+
+    public void setFabTogglesOff() {
+        lightsOff = false;
+        fab.setImageDrawable(getDrawable(R.drawable.ic_lightbulb_open));
     }
 
     public Boolean isDarkMode() {

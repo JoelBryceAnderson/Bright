@@ -9,14 +9,15 @@
     <color name="colorIcons">#FFFFFF</color>
     <color name="colorDivider">#B6B6B6</color>
 
-    <color name="colorPrimaryNight">#03A9F4</color>
-    <color name="colorPrimaryDarkNight">#0288D1</color>
-    <color name="colorPrimaryLightNight">#B3E5FC</color>
+    <color name="colorPrimaryNight">#512DA8</color>
+    <color name="colorPrimaryDarkNight">#673AB7</color>
+    <color name="colorPrimaryLightNight">#D1C4E9</color>
     <color name="colorAccentNight">#ffffff</color>
     <color name="colorPrimaryTextNight">#212121</color>
     <color name="colorSecondaryTextNight">#727272</color>
     <color name="colorIconsNight">#FFFFFF</color>
     <color name="colorDividerNight">#B6B6B6</color>
 
+    <color name="White">#ffffff</color>
     <color name="Black">#000000</color>
 </resources>

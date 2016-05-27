@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:outlineProvider="bounds"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:animateLayoutChanges="true"
+    android:paddingLeft="22dp"
+    android:paddingBottom="12dp"
+    android:paddingRight="22dp"
+    android:paddingTop="12dp"
+    android:focusable="true"
+    android:background="?android:selectableItemBackground"
+    android:clickable="true"
+    android:id="@+id/whole_item_group"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/image_view_group"
+            android:src="@drawable/circle_color"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:id="@+id/group_name"
+            android:paddingLeft="16dp"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="#000000"
+            android:layout_toRightOf="@+id/image_view_group"
+            android:layout_toLeftOf="@+id/group_toggle"
+            android:layout_width="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_height="wrap_content" />
+
+        <Switch
+            android:id="@+id/group_toggle"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+</LinearLayout>

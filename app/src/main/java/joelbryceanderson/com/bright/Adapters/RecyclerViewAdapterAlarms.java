@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -361,9 +362,11 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                         }
 
                         int pixel = bitmap.getPixel(currentX, currentY);
-                        currentColor = Color.argb(255,
-                                Color.red(pixel), Color.green(pixel), Color.blue(pixel));
-                        color.setColorFilter(currentColor);
+                        if (pixel != 0) {
+                            currentColor = Color.argb(255,
+                                    Color.red(pixel), Color.green(pixel), Color.blue(pixel));
+                            color.getBackground().setColorFilter(currentColor, PorterDuff.Mode.OVERLAY);
+                        }
                 }
                 return true;
             }

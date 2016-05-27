@@ -56,6 +56,17 @@ public class LightsFragment extends android.support.v4.app.Fragment {
         PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
         List<PHLight> myLights = cache.getAllLights();
         MainActivity parent = (MainActivity) getActivity();
+
+        int totalLightsOn = 0;
+        for (PHLight thisLight : myLights) {
+            if (thisLight.getLastKnownLightState().isOn()) {
+                totalLightsOn++;
+            }
+        }
+        if (totalLightsOn > (myLights.size() / 2)) {
+            parent.setFabTogglesOff();
+        }
+
         adapter = new RecyclerViewAdapterLights(myLights, parent.getBridge());
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

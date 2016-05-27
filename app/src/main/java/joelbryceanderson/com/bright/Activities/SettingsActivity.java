@@ -6,25 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
-import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
-
-import joelbryceanderson.com.bright.R;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 import java.util.List;
+
+import joelbryceanderson.com.bright.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -53,7 +46,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 .getDefaultSharedPreferences(getApplicationContext());
         Boolean darkMode = prefs.getBoolean("dark_mode", false);
         if (darkMode) {
-            setTheme(R.style.AppThemeNight);
+            setTheme(R.style.AppThemeNightPrefs);
         }
 
         super.onCreate(savedInstanceState);
@@ -135,6 +128,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_appearance);
             setHasOptionsMenu(true);
         }
+
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {

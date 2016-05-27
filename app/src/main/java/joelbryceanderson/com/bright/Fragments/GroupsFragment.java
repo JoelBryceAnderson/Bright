@@ -17,12 +17,23 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.Wearable;
 import com.google.gson.Gson;
+import com.philips.lighting.hue.listener.PHGroupListener;
+import com.philips.lighting.hue.sdk.PHHueSDK;
+import com.philips.lighting.model.PHBridgeResource;
+import com.philips.lighting.model.PHGroup;
+import com.philips.lighting.model.PHHueError;
+import com.philips.lighting.model.PHLight;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import joelbryceanderson.com.bright.Activities.GroupPickerActivity;
@@ -42,6 +53,8 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
     private List<LightGroup> lightGroupList;
     private FrameLayout frameLayout;
     private CardView noItemsCard;
+    private GoogleApiClient mGoogleApiClient;
+    private PHHueSDK phHueSDK;
 
     public GroupsFragment() {
         // Required empty public constructor
@@ -58,6 +71,28 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                    }
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                    }
+                })
+                .addApi(Wearable.API)
+                .build();
+        mGoogleApiClient.connect();
+
+        phHueSDK = PHHueSDK.getInstance();
+
+        //Set up views to display
         recyclerView = (RecyclerView) getView().findViewById(R.id.groups_recycler);
         frameLayout = (FrameLayout) getView().findViewById(R.id.groups_frame_layout);
         noItemsCard = (CardView) getView().findViewById(R.id.no_groups_card);
@@ -65,10 +100,14 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
+
+
+        //Get all groups and display them in recycler view
         SharedPreferences appSharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
         Gson gson = new Gson();
-        Set<String> stringSet = appSharedPrefs.getStringSet("groups", new HashSet<String>());
+        Set<String> stringSet = appSharedPrefs.getStringSet("myGroups", new HashSet<String>());
+
         if (!stringSet.isEmpty()) {
             noItemsCard.setVisibility(View.GONE);
             lightGroupList = new ArrayList<>();
@@ -81,6 +120,9 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             adapter = new RecyclerViewAdapterGroups(lightGroupList, parent.getBridge(), this);
             recyclerView.setAdapter(adapter);
         }
+
+
+        //Hide FAB on scroll
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -92,6 +134,8 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
                 }
             }
         });
+
+        //Set Dark Mode
         final SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getActivity().getApplicationContext());
         if (prefs.getBoolean("dark_mode", false)) {
@@ -104,12 +148,24 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         SharedPreferences appSharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
         Gson gson = new Gson();
-        Set<String> stringSet = appSharedPrefs.getStringSet("groups", new HashSet<String>());
+        Set<String> stringSet = appSharedPrefs.getStringSet("myGroups", new HashSet<String>());
         if (!stringSet.isEmpty()) {
             lightGroupList = new ArrayList<>();
             for (String groupName : stringSet) {
@@ -122,6 +178,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             recyclerView.setAdapter(adapter);
             noItemsCard.setVisibility(View.GONE);
         }
+        mGoogleApiClient.connect();
     }
 
     public void addNewGroup() {
@@ -134,13 +191,15 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         adapter.notifyItemRemoved(position);
         final SharedPreferences appSharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
-        final Set<String> stringSet = appSharedPrefs.getStringSet("groups", new HashSet<String>());
+        final Set<String> stringSet = appSharedPrefs.getStringSet("myGroups", new HashSet<String>());
         stringSet.remove(name);
         final String contents = appSharedPrefs.getString(name, "");
         SharedPreferences.Editor edit = appSharedPrefs.edit();
         edit.remove(name);
-        edit.putStringSet("groups", stringSet);
+        edit.putStringSet("myGroups", stringSet);
         edit.commit();
+        phHueSDK.getSelectedBridge().deleteGroup(group.getIdentifier(), null);
+        removeDataItem(name);
         Snackbar snackbar = Snackbar.make(frameLayout, "Group deleted",
                 Snackbar.LENGTH_SHORT).setAction("Undo", new View.OnClickListener() {
             @Override
@@ -150,11 +209,52 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
                         frameLayout, "Group restored", Snackbar.LENGTH_SHORT);
                 snackbar1.show();
                 lightGroupList.add(position, group);
+                syncDataItem(name, group.hasAnyColor());
                 stringSet.add(name);
                 SharedPreferences.Editor edit = appSharedPrefs.edit();
-                edit.putStringSet("groups", stringSet);
+                edit.putStringSet("myGroups", stringSet);
                 edit.putString(name, contents);
                 adapter.notifyItemInserted(position);
+                PHGroup newGroup = new PHGroup();
+                List <String> lightIdentifiers = new ArrayList<>();
+
+                for (PHLight light : group.getLights()) {
+                    lightIdentifiers.add(light.getIdentifier());
+                }
+
+                newGroup.setLightIdentifiers(lightIdentifiers);
+                phHueSDK.getSelectedBridge().createGroup(newGroup, new PHGroupListener() {
+                    @Override
+                    public void onCreated(PHGroup phGroup) {
+                        group.setIdentifier(phGroup.getIdentifier());
+                    }
+
+                    @Override
+                    public void onReceivingGroupDetails(PHGroup phGroup) {
+
+                    }
+
+                    @Override
+                    public void onReceivingAllGroups(List<PHBridgeResource> list) {
+
+                    }
+
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+
+                    @Override
+                    public void onStateUpdate(Map<String, String> map, List<PHHueError> list) {
+
+                    }
+                });
+
                 edit.commit();
             }
         });
@@ -162,5 +262,26 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         if (adapter.getItemCount() == 0) {
             noItemsCard.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void removeDataItem(String name) {
+        if(mGoogleApiClient==null)
+            return;
+
+        final PutDataMapRequest putRequest = PutDataMapRequest.create("/GROUPS_REMOVE");
+        final DataMap map = putRequest.getDataMap();
+        map.putString("name", name);
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest().setUrgent());
+    }
+
+    private void syncDataItem(String name, boolean hasColor) {
+        if(mGoogleApiClient==null)
+            return;
+
+        final PutDataMapRequest putRequest = PutDataMapRequest.create("/GROUPS");
+        final DataMap map = putRequest.getDataMap();
+        map.putString("name", name);
+        map.putBoolean("hasColor", hasColor);
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest().setUrgent());
     }
 }

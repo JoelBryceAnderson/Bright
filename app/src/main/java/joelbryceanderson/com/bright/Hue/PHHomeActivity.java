@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -57,11 +58,18 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
     private RelativeLayout relativeLayout;
     private String lastIpAddress;
     private String lastUsername;
+    private PHAccessPoint lastAccessPoint;
 
     private boolean lastSearchWasIPScan = false;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final SharedPreferences prefers = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
+        Boolean darkMode = prefers.getBoolean("dark_mode", false);
+        if (darkMode) {
+            setTheme(R.style.AppThemeNight);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bridgelistlinear);
         CardView card = (CardView) findViewById(R.id.find_bridge_card);
@@ -92,13 +100,15 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
 
         // Automatically try to connect to the last connected IP Address.  For multiple bridge support a different implementation is required.
         if (lastIpAddress !=null && !lastIpAddress.equals("")) {
-            PHAccessPoint lastAccessPoint = new PHAccessPoint();
+            lastAccessPoint = new PHAccessPoint();
             lastAccessPoint.setIpAddress(lastIpAddress);
             lastAccessPoint.setUsername(lastUsername);
            
             if (!phHueSDK.isAccessPointConnected(lastAccessPoint)) {
                 Snackbar.make(relativeLayout, R.string.connecting, Snackbar.LENGTH_SHORT).show();
                 phHueSDK.connect(lastAccessPoint);
+            } else {
+                startMainActivity();
             }
         }
         else {  // First time use, so perform a bridge search.
@@ -116,7 +126,6 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
-
 
     // Local SDK Listener
     private PHSDKListener listener = new PHSDKListener() {

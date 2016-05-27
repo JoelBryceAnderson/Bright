@@ -8,6 +8,12 @@
 
     <SwitchPreference
         android:defaultValue="false"
+        android:key="dark_mode_wear"
+        android:summary="Enable Bright's dark theme on your Android Wear device."
+        android:title="Dark Mode for Android Wear" />
+
+    <SwitchPreference
+        android:defaultValue="false"
         android:summary="Open the groups page when starting the app."
         android:key="groups_on_startup"
         android:title="Groups on Startup" />

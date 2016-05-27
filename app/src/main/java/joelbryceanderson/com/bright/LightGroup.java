@@ -12,10 +12,12 @@ public class LightGroup {
 
     private List<PHLight> lights;
     private String name;
+    private String identifier;
 
-    public LightGroup(List<PHLight> lights, String name) {
+    public LightGroup(List<PHLight> lights, String name, String identifier) {
         this.lights = lights;
         this.name = name;
+        this.identifier = identifier;
     }
 
     public LightGroup(List<PHLight> lights) {
@@ -31,12 +33,20 @@ public class LightGroup {
         return name;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
     public void setLights(List<PHLight> lights) {
         this.lights = lights;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setIdentifier(String name) {
+        this.identifier = identifier;
     }
 
     public boolean hasAnyColor() {

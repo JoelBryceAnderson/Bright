@@ -7,8 +7,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -29,6 +32,7 @@ import com.philips.lighting.model.PHLightState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import joelbryceanderson.com.bright.Fragments.GroupsFragment;
 import joelbryceanderson.com.bright.LightGroup;
@@ -55,6 +59,10 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         protected LinearLayout mLinearLayout;
         protected ImageView mImageView;
         protected SeekBar mBrightnessBar;
+
+        protected FloatingActionButton percentageIndicatorFab;
+        protected FrameLayout percentageIndicatorWhole;
+        protected TextView percentageIndicatorText;
         public ViewHolder(View v) {
             super(v);
             mTextView = (TextView) v.findViewById(R.id.group_name);
@@ -62,6 +70,12 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
             mLinearLayout = (LinearLayout) v.findViewById(R.id.whole_item_group);
             mImageView = (ImageView) v.findViewById(R.id.image_view_group);
             mBrightnessBar = (SeekBar) v.findViewById(R.id.brightness_bar_group);
+
+            percentageIndicatorFab = (FloatingActionButton)
+                    v.findViewById(R.id.percentage_indicator_fab);
+            percentageIndicatorWhole = (FrameLayout)
+                    v.findViewById(R.id.percentage_indicator_whole);
+            percentageIndicatorText = (TextView) v.findViewById(R.id.percentage_indicator_text);
         }
     }
 
@@ -96,6 +110,10 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
             numLights++;
             totalBrightness += light.getLastKnownLightState().getBrightness();
         }
+        holder.percentageIndicatorFab.hide();
+        holder.percentageIndicatorFab.setElevation(4);
+        holder.percentageIndicatorWhole.setVisibility(View.GONE);
+
         holder.mBrightnessBar.setProgress(totalBrightness / numLights);
         holder.mLightSwitch.setChecked(false);
         holder.mBrightnessBar.setEnabled(false);
@@ -111,29 +129,47 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                     state.setOn(false);
                     holder.mBrightnessBar.setEnabled(false);
                 }
-                for (PHLight light : thisGroup.getLights()) {
-                    mBridge.updateLightState(light, state);
-                }
+                mBridge.setLightStateForGroup(thisGroup.getIdentifier(), state);
             }
         });
         holder.mBrightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                PHLightState state = new PHLightState();
-                state.setBrightness(progress);
-                for (PHLight light : thisGroup.getLights()) {
-                    mBridge.updateLightState(light, state);
+                float percentage = (progress * 100.0f) / 250;
+                int intPercentage = (int) percentage;
+                if (intPercentage == 0) {
+                    intPercentage += 1;
                 }
+                holder.percentageIndicatorText
+                        .setText(String.format(Locale.getDefault(), "%d%%", intPercentage));
+
+                int floatingPosition = (int) (seekBar.getX()
+                        + seekBar.getThumbOffset() / 2
+                        + (seekBar).getThumb().getBounds().exactCenterX());
+                holder.percentageIndicatorWhole.setX(floatingPosition
+                        - (seekBar.getPaddingLeft() / 2) - holder.mLinearLayout.getPaddingLeft());
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                holder.percentageIndicatorWhole.setVisibility(View.VISIBLE);
+                holder.percentageIndicatorFab.show();
+                holder.percentageIndicatorText.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onStopTrackingTouch(final SeekBar seekBar) {
+                holder.percentageIndicatorText.setVisibility(View.GONE);
+                holder.percentageIndicatorFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                    @Override
+                    public void onHidden(FloatingActionButton fab) {
+                        super.onHidden(fab);
+                        holder.percentageIndicatorWhole.setVisibility(View.GONE);
+                        PHLightState state = new PHLightState();
+                        state.setBrightness(seekBar.getProgress());
+                        mBridge.setLightStateForGroup(thisGroup.getIdentifier(), state);
+                    }
+                });
             }
         });
         if (thisGroup.hasAnyColor()) {
@@ -145,6 +181,13 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                 }
             });
         }
+
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.mLightSwitch.toggle();
+            }
+        });
         holder.mLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -171,6 +214,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                 .getDefaultSharedPreferences(mContext);
         darkMode = prefs.getBoolean("dark_mode", false);
         if (darkMode) {
+            holder.percentageIndicatorText.setTextColor(Color.parseColor("#000000"));
             holder.mLinearLayout.setBackgroundColor(Color.parseColor("#000000"));
             holder.mTextView.setTextColor(Color.parseColor("#ffffff"));
         }
@@ -267,9 +311,11 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                         }
 
                         int pixel = bitmap.getPixel(currentX, currentY);
-                        currentColor = Color.argb(255,
-                                Color.red(pixel), Color.green(pixel), Color.blue(pixel));
-                        color.setColorFilter(currentColor);
+                        if (pixel != 0) {
+                            currentColor = Color.argb(255,
+                                    Color.red(pixel), Color.green(pixel), Color.blue(pixel));
+                            color.getBackground().setColorFilter(currentColor, PorterDuff.Mode.OVERLAY);
+                        }
                 }
                 return true;
             }
@@ -284,7 +330,9 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                         float[] xy = PHUtilities.calculateXY(currentColor, light.getModelNumber());
                         lightState.setX(xy[0]);
                         lightState.setY(xy[1]);
+                        lightState.setOn(true);
                         mBridge.updateLightState(light, lightState);
+                        list.get(position).mLightSwitch.setChecked(true);
                     }
                 }
                 dialog.cancel();
@@ -298,11 +346,8 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         lightState.setOn(true);
         lightState.setX(x);
         lightState.setY(y);
-        for (PHLight light : lightList.get(position).getLights()) {
-            if (light.supportsColor()) {
-                mBridge.updateLightState(light, lightState);
-            }
-        }
+        mBridge.setLightStateForGroup(lightList.get(position).getIdentifier(), lightState);
+        list.get(position).mLightSwitch.setChecked(true);
     }
 
 }

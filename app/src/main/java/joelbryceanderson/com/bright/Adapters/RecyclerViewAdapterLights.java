@@ -3,23 +3,20 @@ package joelbryceanderson.com.bright.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Matrix;
-import android.graphics.Shader;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -33,6 +30,7 @@ import com.philips.lighting.model.PHLightState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import joelbryceanderson.com.bright.Fragments.LightsFragment;
 import joelbryceanderson.com.bright.R;
@@ -50,24 +48,36 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        protected LinearLayout mLinearLayout;
+
         protected TextView mTextView;
         protected Switch mLightSwitch;
         protected ImageView mImageView;
-        protected LinearLayout mLinearLayout;
         protected SeekBar mBrightnessBar;
+
+        protected FloatingActionButton percentageIndicatorFab;
+        protected FrameLayout percentageIndicatorWhole;
+        protected TextView percentageIndicatorText;
         public ViewHolder(View v) {
             super(v);
+            mLinearLayout = (LinearLayout) v.findViewById(R.id.whole_item_light);
+
             mTextView = (TextView) v.findViewById(R.id.light_name);
             mLightSwitch = (Switch) v.findViewById(R.id.light_toggle);
             mImageView = (ImageView) v.findViewById(R.id.image_view_light);
-            mLinearLayout = (LinearLayout) v.findViewById(R.id.whole_item_light);
             mBrightnessBar = (SeekBar) v.findViewById(R.id.brightness_bar);
+
+            percentageIndicatorFab = (FloatingActionButton)
+                    v.findViewById(R.id.percentage_indicator_fab);
+            percentageIndicatorWhole = (FrameLayout)
+                    v.findViewById(R.id.percentage_indicator_whole);
+            percentageIndicatorText = (TextView) v.findViewById(R.id.percentage_indicator_text);
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerViewAdapterLights(List<PHLight> myDataset, PHBridge bridge) {
-        lightList = myDataset;
+    // Provide a suitable constructor (depends on the kind of data set)
+    public RecyclerViewAdapterLights(List<PHLight> myDataSet, PHBridge bridge) {
+        lightList = myDataSet;
         mBridge = bridge;
     }
 
@@ -88,7 +98,11 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         list.add(holder);
+        holder.percentageIndicatorFab.hide();
+        holder.percentageIndicatorFab.setElevation(4);
+        holder.percentageIndicatorWhole.setVisibility(View.GONE);
         holder.mTextView.setText(lightList.get(position).getName());
+        holder.mLightSwitch.setOnCheckedChangeListener(null);
         holder.mLightSwitch.setChecked(lightList.get(position).getLastKnownLightState().isOn());
         holder.mLightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -117,11 +131,26 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         if (!lightList.get(position).getLastKnownLightState().isOn()) {
             holder.mBrightnessBar.setEnabled(false);
         }
+        holder.mBrightnessBar.setOnSeekBarChangeListener(null);
         holder.mBrightnessBar.setProgress(lightList.get(position)
                 .getLastKnownLightState().getBrightness());
         holder.mBrightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float percentage = (progress * 100.0f) / 250;
+                int intPercentage = (int) percentage;
+                if (intPercentage == 0) {
+                    intPercentage += 1;
+                }
+                holder.percentageIndicatorText
+                        .setText(String.format(Locale.getDefault(), "%d%%", intPercentage));
+
+                int floatingPosition = (int) (seekBar.getX()
+                        + seekBar.getThumbOffset() / 2
+                        + (seekBar).getThumb().getBounds().exactCenterX());
+                holder.percentageIndicatorWhole.setX(floatingPosition
+                        - (seekBar.getPaddingLeft() / 2) - holder.mLinearLayout.getPaddingLeft());
+
                 if (progress > 0) {
                     PHLightState lightState = new PHLightState();
                     lightState.setBrightness(progress);
@@ -131,18 +160,38 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                holder.percentageIndicatorWhole.setVisibility(View.VISIBLE);
+                holder.percentageIndicatorFab.show();
+                holder.percentageIndicatorText.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                holder.percentageIndicatorText.setVisibility(View.GONE);
+                holder.percentageIndicatorFab.hide(
+                        new FloatingActionButton.OnVisibilityChangedListener() {
+                    @Override
+                    public void onHidden(FloatingActionButton fab) {
+                        super.onHidden(fab);
+                        holder.percentageIndicatorWhole.setVisibility(View.GONE);
+                    }
+                });
             }
         });
+        holder.mBrightnessBar.setEnabled(holder.mLightSwitch.isChecked());
+
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.mLightSwitch.toggle();
+            }
+        });
+
         final SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(mContext);
         darkMode = prefs.getBoolean("dark_mode", false);
         if (darkMode) {
+            holder.percentageIndicatorText.setTextColor(Color.parseColor("#000000"));
             holder.mLinearLayout.setBackgroundColor(Color.parseColor("#000000"));
             holder.mTextView.setTextColor(Color.parseColor("#ffffff"));
         }
@@ -222,8 +271,8 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                         colorSpectrum.getImageMatrix().invert(inverse);
                         float[] touchPoint = new float[] {event.getX(), event.getY()};
                         inverse.mapPoints(touchPoint);
-                        int currentX = Integer.valueOf((int)touchPoint[0]);
-                        int currentY = Integer.valueOf((int)touchPoint[1]);
+                        int currentX = (int) touchPoint[0];
+                        int currentY = (int) touchPoint[1];
 
                         if (currentX < 0) {
                             currentX = 0;
@@ -238,14 +287,15 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                         if (currentY > bitmap.getHeight() - 1) {
                             currentY = bitmap.getHeight() - 1;
                         }
-
                         int pixel = bitmap.getPixel(currentX, currentY);
-                        currentColor = Color.argb(255,
-                                Color.red(pixel), Color.green(pixel), Color.blue(pixel));
-                        String modelNo = lightList.get(position).getModelNumber();
-                        currentColor = PHUtilities.colorFromXY(
-                                PHUtilities.calculateXY(currentColor, modelNo), modelNo);
-                        color.setColorFilter(currentColor);
+                        if (pixel != 0) {
+                            currentColor = Color.argb(255,
+                                    Color.red(pixel), Color.green(pixel), Color.blue(pixel));
+                            String modelNo = lightList.get(position).getModelNumber();
+                            currentColor = PHUtilities.colorFromXY(
+                                    PHUtilities.calculateXY(currentColor, modelNo), modelNo);
+                            color.getBackground().setColorFilter(currentColor, PorterDuff.Mode.OVERLAY);
+                        }
                 }
                 return true;
             }

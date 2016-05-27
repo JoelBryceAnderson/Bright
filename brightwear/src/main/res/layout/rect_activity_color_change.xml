@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.JoelBryceAnderson.bright.ColorChangeActivity"
+    tools:deviceIds="wear_square">
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:id="@+id/large_spectrum"
+            android:src="@drawable/color_spectrum"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:layout_width="56dp"
+            android:id="@+id/color_select"
+            android:layout_margin="16dp"
+            android:padding="12dp"
+            android:elevation="8dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_color"
+            android:src="@drawable/check"
+            android:layout_height="56dp" />
+
+    </FrameLayout>
+
+    <android.support.wearable.view.DismissOverlayView
+        android:id="@+id/dismiss_overlay"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+</FrameLayout>

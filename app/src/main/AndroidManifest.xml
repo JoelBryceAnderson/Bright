@@ -48,12 +48,24 @@
 
         <activity
             android:name=".Activities.SettingsActivity"
+            android:theme="@style/AppTheme"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".Activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="joelbryceanderson.com.bright.Activities.MainActivity" />
         </activity>
+
+        <service android:name=".WearCommandsService" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/lights/group/" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
