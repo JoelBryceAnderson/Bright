@@ -60,9 +60,9 @@ public class RecyclerGroupAdapterWearGroups extends RecyclerView.Adapter<Recycle
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerGroupAdapterWearGroups(List<Group> myDataset, MainActivity parent) {
-        groupList = myDataset;
+    // Provide a suitable constructor (depends on the kind of data set)
+    public RecyclerGroupAdapterWearGroups(List<Group> myDataSet, MainActivity parent) {
+        groupList = myDataSet;
         this.parent = parent;
     }
 
@@ -70,25 +70,24 @@ public class RecyclerGroupAdapterWearGroups extends RecyclerView.Adapter<Recycle
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                    int viewType) {
+        mContext = parent.getContext();
+
         // create a new view
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_group_list, parent, false);
-            mContext = parent.getContext();
             ViewHolderItem toReturn = new ViewHolderItem(v);
             viewHolderList.add(toReturn);
             return toReturn;
         } else if (viewType == TYPE_HEADER) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.header_group_list, parent, false);
-            mContext = parent.getContext();
             ViewHolderHeader toReturn = new ViewHolderHeader(v);
             viewHolderList.add(toReturn);
             return toReturn;
         } else {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.footer_group_list, parent, false);
-            mContext = parent.getContext();
             ViewHolderFooter toReturn = new ViewHolderFooter(v);
             viewHolderList.add(toReturn);
             return toReturn;
@@ -103,23 +102,16 @@ public class RecyclerGroupAdapterWearGroups extends RecyclerView.Adapter<Recycle
         if (holder instanceof ViewHolderItem) {
             final Group thisGroup = groupList.get(position);
             final ViewHolderItem VHitem = (ViewHolderItem) holder;
-            VHitem.mLinearLayout.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, BrightnessActivity.class);
-                intent.putExtra("groupName", groupList.get(position).getName());
-                intent.putExtra("position", position);
-                parent.startActivityForResult(intent, 1);
-                parent.overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-            });
+
+            VHitem.mLinearLayout.setOnClickListener(onBrightnessClick(position));
+
             if (thisGroup.hasAnyColor()) {
                 VHitem.mImageView.setImageResource(R.drawable.color_spectrum_tiny);
-                VHitem.mImageView.setOnClickListener(v -> {
-                    Intent intent = new Intent(mContext, ColorChangeActivity.class);
-                    intent.putExtra("position", position);
-                    parent.startActivityForResult(intent, 2);
-                    parent.overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-                });
+                VHitem.mImageView.setOnClickListener(onColorClick(position));
             }
+
             VHitem.mTextView.setText(thisGroup.getName());
+
             VHitem.mLightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     parent.turnGroupOn(position);
@@ -128,6 +120,25 @@ public class RecyclerGroupAdapterWearGroups extends RecyclerView.Adapter<Recycle
                 }
             });
         }
+    }
+
+    private View.OnClickListener onBrightnessClick(int position) {
+        return view -> {
+            Intent intent = new Intent(mContext, BrightnessActivity.class);
+            intent.putExtra("groupName", groupList.get(position).getName());
+            intent.putExtra("position", position);
+            parent.startActivityForResult(intent, 1);
+            parent.overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        };
+    }
+
+    private View.OnClickListener onColorClick(int position) {
+        return view -> {
+            Intent intent = new Intent(mContext, ColorChangeActivity.class);
+            intent.putExtra("position", position);
+            parent.startActivityForResult(intent, 2);
+            parent.overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        };
     }
 
     // Return the size of your data set (invoked by the layout manager)
