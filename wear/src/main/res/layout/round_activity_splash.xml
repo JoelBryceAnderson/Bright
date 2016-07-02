@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorPrimary"
+    android:id="@+id/splash_layout"
+    tools:context="joelbryceanderson.com.bright.SplashActivity"
+    tools:deviceIds="wear_round">
+
+    <ImageView
+        android:id="@+id/splashIcon"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/light_bulb"
+        android:src="@drawable/lightbulb"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/connecting_to_bridge"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:paddingTop="12dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/splashIcon" />
+</RelativeLayout>

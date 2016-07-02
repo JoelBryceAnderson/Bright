@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".MainActivity"
+    tools:deviceIds="wear_round">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/wear_groups_recycler"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/no_groups_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            android:tint="@color/light_grey"
+            android:layout_centerInParent="true"
+            android:src="@drawable/lightbulb"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="@string/no_groups"
+            android:textColor="@color/gray"
+            android:textSize="24sp"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            android:layout_below="@id/no_groups_icon"
+            android:layout_height="match_parent"
+            android:id="@+id/no_groups_text"/>
+
+    </RelativeLayout>
+</RelativeLayout>
