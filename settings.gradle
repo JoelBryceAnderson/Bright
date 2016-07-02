@@ -1,1 +1,1 @@
-include ':app', ':brightwear'
+include ':mobile', ':wear'
