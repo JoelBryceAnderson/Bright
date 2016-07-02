@@ -9,7 +9,7 @@
     tools:deviceIds="wear_round">
 
     <ImageView
-        android:id="@+id/splashIcon"
+        android:id="@+id/splash_icon"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_centerHorizontal="true"
@@ -25,5 +25,5 @@
         android:textColor="@color/white"
         android:paddingTop="12dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/splashIcon" />
+        android:layout_below="@+id/splash_icon" />
 </RelativeLayout>
