@@ -74,10 +74,13 @@ public class MainActivity extends Activity implements
                     Group group = gson.fromJson(json, Group.class);
                     list.add(group);
                 }
+
+                //Remove these and toggle conditional above!
                 list.add(new Group("All Lights", true));
                 list.add(new Group("Living Room", true));
                 list.add(new Group("Kitchen", true));
                 list.add(new Group("Bedroom", true));
+
                 list.add(new Group("footer", false));
             } else {
                 TextView noGroupsText1 = (TextView) stub1.findViewById(R.id.no_groups_text);
