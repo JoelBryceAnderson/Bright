@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -21,10 +20,7 @@ import android.view.View;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
-import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLightState;
-
-import java.util.List;
 
 import joelbryceanderson.com.bright.Fragments.AlarmsFragment;
 import joelbryceanderson.com.bright.Fragments.GroupsFragment;
@@ -37,7 +33,6 @@ public class MainActivity extends AppCompatActivity
 
     private boolean lightsOff = true;
     private PHHueSDK phHueSDK;
-    private Fragment fragment;
     private static final int MAX_HUE = 65535;
     public static final String TAG = "BrightApp";
     private FloatingActionButton fab;
@@ -111,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 
     public void displayView(int viewId) {
 
-        fragment = null;
+        Fragment fragment = null;
         Intent intent = null;
         String title = getString(R.string.app_name);
         switch (viewId) {
@@ -207,7 +202,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Handles the floating action button's action when fragments switch
-     * @param position
+     * @param position position in the fab drawer to decide fab functionality
      */
     public void setFabAction(int position) {
         if (position == 0) {

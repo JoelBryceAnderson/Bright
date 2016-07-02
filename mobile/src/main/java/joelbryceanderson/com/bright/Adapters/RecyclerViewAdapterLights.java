@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import joelbryceanderson.com.bright.Fragments.LightsFragment;
 import joelbryceanderson.com.bright.R;
 
 public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerViewAdapterLights.ViewHolder> {

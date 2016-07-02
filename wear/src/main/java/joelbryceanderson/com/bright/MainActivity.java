@@ -38,7 +38,6 @@ public class MainActivity extends Activity implements
     private Node peerNode;
     private List<Group> list;
     private RecyclerGroupAdapterWearGroups adapter;
-    private TextView noGroupsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,7 @@ public class MainActivity extends Activity implements
             SharedPreferences appSharedPrefs = PreferenceManager
                     .getDefaultSharedPreferences(getApplicationContext());
             Gson gson = new Gson();
-            Set<String> stringSet = appSharedPrefs.getStringSet("groups", new HashSet<String>());
+            Set<String> stringSet = appSharedPrefs.getStringSet("groups", new HashSet<>());
             if (stringSet.isEmpty()) {
                 for (String groupName : stringSet) {
                     String json = appSharedPrefs.getString(groupName, "");
@@ -151,18 +150,13 @@ public class MainActivity extends Activity implements
         );
     }
 
-    private ResultCallback<Status> resultCallback =  new ResultCallback<Status>() {
+    private ResultCallback<Status> resultCallback = status -> new AsyncTask<Void, Void, Void>(){
         @Override
-        public void onResult(Status status) {
-            new AsyncTask<Void, Void, Void>(){
-                @Override
-                protected Void doInBackground(Void... params) {
-                    sendStartMessage();
-                    return null;
-                }
-            }.execute();
+        protected Void doInBackground(Void... params) {
+            sendStartMessage();
+            return null;
         }
-    };
+    }.execute();
 
     private void sendStartMessage(){
 
@@ -177,12 +171,7 @@ public class MainActivity extends Activity implements
                     null
             );
 
-            result.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-                @Override
-                public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                    peerNode = node;
-                }
-            });
+            result.setResultCallback(sendMessageResult -> peerNode = node);
         }
     }
 
@@ -195,18 +184,12 @@ public class MainActivity extends Activity implements
                 changeGroupBrightness(positionToSet, brightnessToSet);
                 adapter.turnOnSwitch(positionToSet);
             }
-            if (resultCode == Activity.RESULT_CANCELED) {
-
-            }
         } else if (requestCode == 2) {
             if(resultCode == Activity.RESULT_OK){
                 int colorToSet = data.getIntExtra("color", 0);
                 int positionToSet = data.getIntExtra("position", 1);
                 changeGroupColor(positionToSet, colorToSet);
                 adapter.turnOnSwitch(positionToSet);
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-
             }
         }
     }

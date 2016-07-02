@@ -38,7 +38,8 @@ import joelbryceanderson.com.bright.Fragments.AlarmsFragment;
 import joelbryceanderson.com.bright.R;
 
 /**
- * Created by JAnderson on 2/11/16.
+ * Created by Joel Anderson on 2/11/16.
+ * Adapter for alarms recycler view.
  */
 public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerViewAdapterAlarms.ViewHolder> {
     private List<PHSchedule> scheduleList;
@@ -204,7 +205,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         } else if (r == 0) {
             recurringDays = "NO REPEAT";
         } else {
-            if ((r & (1 << 0)) != 0) {
+            if ((r & (1)) != 0) {
                 recurringDays = recurringDays.concat("SUN ");
             }
             if ((r & (1 << 6)) != 0) {
@@ -335,8 +336,8 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                         colorSpectrum.getImageMatrix().invert(inverse);
                         float[] touchPoint = new float[] {event.getX(), event.getY()};
                         inverse.mapPoints(touchPoint);
-                        int currentX = Integer.valueOf((int)touchPoint[0]);
-                        int currentY = Integer.valueOf((int)touchPoint[1]);
+                        int currentX = (int) touchPoint[0];
+                        int currentY = (int) touchPoint[1];
 
                         if (currentX < 0) {
                             currentX = 0;

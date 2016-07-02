@@ -128,7 +128,7 @@ public class GroupPickerActivity extends AppCompatActivity {
         PHHueSDK phHueSDK = PHHueSDK.getInstance();
         PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
         List<PHLight> myLights = cache.getAllLights();
-        adapter = new GroupPickerAdapter(myLights, phHueSDK.getSelectedBridge(), true);
+        adapter = new GroupPickerAdapter(myLights, true);
         recyclerView.setAdapter(adapter);
 
         //Hide the FAB on scroll

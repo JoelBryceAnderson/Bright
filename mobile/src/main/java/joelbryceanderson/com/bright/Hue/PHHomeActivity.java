@@ -1,16 +1,12 @@
 package joelbryceanderson.com.bright.Hue;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +26,8 @@ import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHHueParsingError;
+
+import java.util.List;
 
 import joelbryceanderson.com.bright.Activities.MainActivity;
 import joelbryceanderson.com.bright.Adapters.AccessPointListAdapter;
@@ -58,7 +55,6 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
     private RelativeLayout relativeLayout;
     private String lastIpAddress;
     private String lastUsername;
-    private PHAccessPoint lastAccessPoint;
 
     private boolean lastSearchWasIPScan = false;
     
@@ -100,7 +96,7 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
 
         // Automatically try to connect to the last connected IP Address.  For multiple bridge support a different implementation is required.
         if (lastIpAddress !=null && !lastIpAddress.equals("")) {
-            lastAccessPoint = new PHAccessPoint();
+            PHAccessPoint lastAccessPoint = new PHAccessPoint();
             lastAccessPoint.setIpAddress(lastIpAddress);
             lastAccessPoint.setUsername(lastUsername);
            

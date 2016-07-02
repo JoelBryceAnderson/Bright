@@ -8,5 +8,5 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="no_groups">You don\'t have any groups yet.</string>
     <string name="light_bulb">light bulb</string>
-    <string name="connecting_to_bridge">Connecting to Bridge...</string>
+    <string name="connecting_to_bridge">Connecting to Bridge…</string>
 </resources>

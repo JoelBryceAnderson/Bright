@@ -2,12 +2,12 @@ package joelbryceanderson.com.bright.Fragments;
 
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
@@ -20,28 +20,21 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.gson.Gson;
 import com.philips.lighting.hue.listener.PHScheduleListener;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridgeResourcesCache;
 import com.philips.lighting.model.PHGroup;
 import com.philips.lighting.model.PHHueError;
-import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHSchedule;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import joelbryceanderson.com.bright.Activities.AlarmPickerActivity;
 import joelbryceanderson.com.bright.Activities.MainActivity;
 import joelbryceanderson.com.bright.Adapters.RecyclerViewAdapterAlarms;
-import joelbryceanderson.com.bright.Adapters.RecyclerViewAdapterGroups;
-import joelbryceanderson.com.bright.Adapters.RecyclerViewAdapterLights;
-import joelbryceanderson.com.bright.LightGroup;
 import joelbryceanderson.com.bright.R;
 
 

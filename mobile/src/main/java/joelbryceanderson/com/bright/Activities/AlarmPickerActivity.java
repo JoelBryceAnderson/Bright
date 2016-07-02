@@ -2,7 +2,6 @@ package joelbryceanderson.com.bright.Activities;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -11,10 +10,10 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -158,7 +157,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
         PHHueSDK phHueSDK = PHHueSDK.getInstance();
         PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
         List<PHLight> myLights = cache.getAllLights();
-        adapter = new GroupPickerAdapter(myLights, phHueSDK.getSelectedBridge(), false);
+        adapter = new GroupPickerAdapter(myLights, false);
         recyclerView.setAdapter(adapter);
 
         //Hide the FAB on scroll
@@ -315,7 +314,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
         }
     }
 
-    public int createBitwise() {
+    public void createBitwise() {
         mBitWise = 0;
         if (daysSelected[0]) {
             mBitWise += PHSchedule.RecurringDay.RECURRING_SUNDAY.getValue();
@@ -338,7 +337,6 @@ public class AlarmPickerActivity extends AppCompatActivity {
         if (daysSelected[6]) {
             mBitWise += PHSchedule.RecurringDay.RECURRING_SATURDAY.getValue();
         }
-        return mBitWise;
     }
 
     public void createDialog(){
@@ -412,8 +410,8 @@ public class AlarmPickerActivity extends AppCompatActivity {
                         colorSpectrum.getImageMatrix().invert(inverse);
                         float[] touchPoint = new float[]{event.getX(), event.getY()};
                         inverse.mapPoints(touchPoint);
-                        int currentX = Integer.valueOf((int) touchPoint[0]);
-                        int currentY = Integer.valueOf((int) touchPoint[1]);
+                        int currentX = (int) touchPoint[0];
+                        int currentY = (int) touchPoint[1];
 
                         if (currentX < 0) {
                             currentX = 0;

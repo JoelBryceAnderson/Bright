@@ -39,7 +39,8 @@ import joelbryceanderson.com.bright.LightGroup;
 import joelbryceanderson.com.bright.R;
 
 /**
- * Created by JAnderson on 2/11/16.
+ * Created by Joel Anderson on 2/11/16.
+ * Recycler view adapter for groups
  */
 public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerViewAdapterGroups.ViewHolder> {
     private List<LightGroup> lightList;
@@ -100,7 +101,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        // - get element from your dataset at this position
+        // - get element from your data set at this position
         // - replace the contents of the view with that element
         final LightGroup thisGroup = lightList.get(position);
         list.add(holder);
@@ -293,8 +294,8 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                         colorSpectrum.getImageMatrix().invert(inverse);
                         float[] touchPoint = new float[] {event.getX(), event.getY()};
                         inverse.mapPoints(touchPoint);
-                        int currentX = Integer.valueOf((int)touchPoint[0]);
-                        int currentY = Integer.valueOf((int)touchPoint[1]);
+                        int currentX = (int) touchPoint[0];
+                        int currentY = (int) touchPoint[1];
 
                         if (currentX < 0) {
                             currentX = 0;

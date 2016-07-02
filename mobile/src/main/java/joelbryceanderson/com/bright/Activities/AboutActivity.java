@@ -1,16 +1,12 @@
 package joelbryceanderson.com.bright.Activities;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import joelbryceanderson.com.bright.R;

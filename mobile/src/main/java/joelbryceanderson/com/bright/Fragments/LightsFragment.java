@@ -1,21 +1,17 @@
 package joelbryceanderson.com.bright.Fragments;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridgeResourcesCache;
 import com.philips.lighting.model.PHLight;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -29,7 +25,6 @@ import joelbryceanderson.com.bright.R;
  */
 public class LightsFragment extends android.support.v4.app.Fragment {
 
-    private RecyclerView recyclerView;
     RecyclerViewAdapterLights adapter;
 
     public LightsFragment() {
@@ -47,7 +42,7 @@ public class LightsFragment extends android.support.v4.app.Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        recyclerView = (RecyclerView) getView().findViewById(R.id.lights_recycler);
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.lights_recycler);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);

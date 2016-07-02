@@ -13,7 +13,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHLight;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import joelbryceanderson.com.bright.R;
 
 public class GroupPickerAdapter extends RecyclerView.Adapter<GroupPickerAdapter.ViewHolder> {
     private List<PHLight> lightList;
-    private PHBridge mBridge;
     private Context mContext;
     private Boolean group;
     private Boolean[] checked;
@@ -48,10 +46,9 @@ public class GroupPickerAdapter extends RecyclerView.Adapter<GroupPickerAdapter.
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public GroupPickerAdapter(List<PHLight> myDataset, PHBridge bridge, Boolean group) {
+    public GroupPickerAdapter(List<PHLight> myDataset, Boolean group) {
         lightList = myDataset;
         this.group = group;
-        mBridge = bridge;
         checked = new Boolean[lightList.size()];
         for (int i = 0; i < checked.length; ++i) {
             checked[i] = false;
