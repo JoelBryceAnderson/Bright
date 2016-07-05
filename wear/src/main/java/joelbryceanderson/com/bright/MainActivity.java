@@ -68,18 +68,12 @@ public class MainActivity extends Activity implements
                     .getDefaultSharedPreferences(getApplicationContext());
             Gson gson = new Gson();
             Set<String> stringSet = appSharedPrefs.getStringSet("groups", new HashSet<>());
-            if (stringSet.isEmpty()) {
+            if (!stringSet.isEmpty()) {
                 for (String groupName : stringSet) {
                     String json = appSharedPrefs.getString(groupName, "");
                     Group group = gson.fromJson(json, Group.class);
                     list.add(group);
                 }
-
-                //Remove these and toggle conditional above!
-                list.add(new Group("All Lights", true));
-                list.add(new Group("Living Room", true));
-                list.add(new Group("Kitchen", true));
-                list.add(new Group("Bedroom", true));
 
                 list.add(new Group("footer", false));
             } else {

@@ -8,7 +8,7 @@ android {
         applicationId "joelbryceanderson.com.bright"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 11
+        versionCode 12
         versionName "1.3"
         jackOptions {
             enabled true
