@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
@@ -79,6 +80,13 @@ public class MainActivity extends AppCompatActivity
 
         if (darkMode) {
             fab.setImageTintList(ColorStateList.valueOf(Color.BLACK));
+            ImageView navHeaderImage = (ImageView) navigationView
+                    .getHeaderView(0).findViewById(R.id.nav_header_image);
+            navHeaderImage.setImageResource(R.drawable.nav_header_dark);
+
+            ImageView navHeaderIcon = (ImageView) navigationView
+                    .getHeaderView(0).findViewById(R.id.nav_header_icon);
+            //navHeaderIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimaryNight));
         }
     }
 
