@@ -54,7 +54,6 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         protected Switch mLightSwitch;
         protected ImageView mImageView;
         protected SeekBar mBrightnessBar;
-        protected View mDivider;
 
         protected FloatingActionButton percentageIndicatorFab;
         protected FrameLayout percentageIndicatorWhole;
@@ -73,8 +72,6 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
             percentageIndicatorWhole = (FrameLayout)
                     v.findViewById(R.id.percentage_indicator_whole);
             percentageIndicatorText = (TextView) v.findViewById(R.id.percentage_indicator_text);
-
-            mDivider = v.findViewById(R.id.divider);
         }
     }
 
@@ -100,20 +97,17 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if (position == lightList.size() - 1) {
-            holder.mDivider.setVisibility(View.GONE);
-        }
         list.add(holder);
         holder.percentageIndicatorFab.hide();
         holder.percentageIndicatorFab.setElevation(4);
         holder.percentageIndicatorWhole.setVisibility(View.GONE);
-        holder.mTextView.setText(lightList.get(position).getName());
+        holder.mTextView.setText(lightList.get(holder.getAdapterPosition()).getName());
         holder.mLightSwitch.setOnCheckedChangeListener(null);
-        holder.mLightSwitch.setChecked(lightList.get(position).getLastKnownLightState().isOn());
+        holder.mLightSwitch.setChecked(lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isOn());
         holder.mLightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (lightList.get(position).getLastKnownLightState().isReachable()) {
+                if (lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isReachable()) {
                     if (isChecked) {
                         holder.mBrightnessBar.setEnabled(true);
                     } else {
@@ -121,7 +115,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                     }
                     PHLightState lightState = new PHLightState();
                     lightState.setOn(isChecked);
-                    mBridge.updateLightState(lightList.get(position), lightState);
+                    mBridge.updateLightState(lightList.get(holder.getAdapterPosition()), lightState);
                 } else {
                     holder.mLightSwitch.setChecked(!isChecked);
                     Snackbar snackbar = Snackbar.make(holder.mLinearLayout,
@@ -130,24 +124,24 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                 }
             }
         });
-        if (lightList.get(position).supportsColor()) {
-            PHLightState state = lightList.get(position).getLastKnownLightState();
+        if (lightList.get(holder.getAdapterPosition()).supportsColor()) {
+            PHLightState state = lightList.get(holder.getAdapterPosition()).getLastKnownLightState();
             if (state.isReachable()) {
                 int color = PHUtilities.colorFromXY(new float[]{state.getX(), state.getY()}, "LCT001");
                 holder.mImageView.setColorFilter(color);
                 holder.mImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        createDialog(mContext, position);
+                        createDialog(mContext, holder.getAdapterPosition());
                     }
                 });
             }
         }
-        if (!lightList.get(position).getLastKnownLightState().isOn()) {
+        if (!lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isOn()) {
             holder.mBrightnessBar.setEnabled(false);
         }
         holder.mBrightnessBar.setOnSeekBarChangeListener(null);
-        holder.mBrightnessBar.setProgress(lightList.get(position)
+        holder.mBrightnessBar.setProgress(lightList.get(holder.getAdapterPosition())
                 .getLastKnownLightState().getBrightness());
         holder.mBrightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -164,12 +158,12 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                         + seekBar.getThumbOffset() / 2
                         + (seekBar).getThumb().getBounds().exactCenterX());
                 holder.percentageIndicatorWhole.setX(floatingPosition
-                        + holder.mLinearLayout.getPaddingLeft() * 2);
+                        + holder.mLinearLayout.getPaddingLeft() * 3);
 
                 if (progress > 0) {
                     PHLightState lightState = new PHLightState();
                     lightState.setBrightness(progress);
-                    mBridge.updateLightState(lightList.get(position), lightState);
+                    mBridge.updateLightState(lightList.get(holder.getAdapterPosition()), lightState);
                 }
             }
 
@@ -210,7 +204,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
             holder.mLinearLayout.setBackgroundColor(Color.parseColor("#000000"));
             holder.mTextView.setTextColor(Color.parseColor("#ffffff"));
         }
-        if (!lightList.get(position).getLastKnownLightState().isReachable()) {
+        if (!lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isReachable()) {
             holder.mBrightnessBar.setVisibility(View.GONE);
             holder.mImageView.setImageResource(R.drawable.ic_not_reachable);
             holder.mImageView.setPadding(24,24,24,24);

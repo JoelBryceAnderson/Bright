@@ -60,7 +60,6 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         protected LinearLayout mLinearLayout;
         protected ImageView mImageView;
         protected SeekBar mBrightnessBar;
-        protected View mDivider;
 
         protected FloatingActionButton percentageIndicatorFab;
         protected FrameLayout percentageIndicatorWhole;
@@ -78,8 +77,6 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
             percentageIndicatorWhole = (FrameLayout)
                     v.findViewById(R.id.percentage_indicator_whole);
             percentageIndicatorText = (TextView) v.findViewById(R.id.percentage_indicator_text);
-
-            mDivider = v.findViewById(R.id.divider);
         }
     }
 
@@ -106,10 +103,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your data set at this position
         // - replace the contents of the view with that element
-        final LightGroup thisGroup = lightList.get(position);
-        if (position == lightList.size() - 1) {
-            holder.mDivider.setVisibility(View.GONE);
-        }
+        final LightGroup thisGroup = lightList.get(holder.getAdapterPosition());
         list.add(holder);
         int totalBrightness = 0;
         int numLights = 0;
@@ -154,7 +148,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                         + seekBar.getThumbOffset() / 2
                         + (seekBar).getThumb().getBounds().exactCenterX());
                 holder.percentageIndicatorWhole.setX(floatingPosition
-                        + holder.mLinearLayout.getPaddingLeft() * 2);
+                        + holder.mLinearLayout.getPaddingLeft() * 3);
             }
 
             @Override
@@ -184,7 +178,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
             holder.mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    createDialog(mContext, position);
+                    createDialog(mContext, holder.getAdapterPosition());
                 }
             });
         }
@@ -204,7 +198,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                 deleter.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        parent.removeGroup(thisGroup.getName(), position);
+                        parent.removeGroup(thisGroup.getName(), holder.getAdapterPosition());
                     }
                 });
                 deleter.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
