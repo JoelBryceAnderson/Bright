@@ -54,6 +54,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         protected Switch mLightSwitch;
         protected ImageView mImageView;
         protected SeekBar mBrightnessBar;
+        protected View mDivider;
 
         protected FloatingActionButton percentageIndicatorFab;
         protected FrameLayout percentageIndicatorWhole;
@@ -72,6 +73,8 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
             percentageIndicatorWhole = (FrameLayout)
                     v.findViewById(R.id.percentage_indicator_whole);
             percentageIndicatorText = (TextView) v.findViewById(R.id.percentage_indicator_text);
+
+            mDivider = v.findViewById(R.id.divider);
         }
     }
 
@@ -97,6 +100,9 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        if (position == lightList.size() - 1) {
+            holder.mDivider.setVisibility(View.GONE);
+        }
         list.add(holder);
         holder.percentageIndicatorFab.hide();
         holder.percentageIndicatorFab.setElevation(4);
@@ -158,7 +164,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                         + seekBar.getThumbOffset() / 2
                         + (seekBar).getThumb().getBounds().exactCenterX());
                 holder.percentageIndicatorWhole.setX(floatingPosition
-                        + holder.mLinearLayout.getPaddingLeft() * 4);
+                        + holder.mLinearLayout.getPaddingLeft() * 2);
 
                 if (progress > 0) {
                     PHLightState lightState = new PHLightState();

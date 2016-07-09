@@ -60,6 +60,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         protected LinearLayout mLinearLayout;
         protected ImageView mImageView;
         protected SeekBar mBrightnessBar;
+        protected View mDivider;
 
         protected FloatingActionButton percentageIndicatorFab;
         protected FrameLayout percentageIndicatorWhole;
@@ -77,6 +78,8 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
             percentageIndicatorWhole = (FrameLayout)
                     v.findViewById(R.id.percentage_indicator_whole);
             percentageIndicatorText = (TextView) v.findViewById(R.id.percentage_indicator_text);
+
+            mDivider = v.findViewById(R.id.divider);
         }
     }
 
@@ -104,6 +107,9 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         // - get element from your data set at this position
         // - replace the contents of the view with that element
         final LightGroup thisGroup = lightList.get(position);
+        if (position == lightList.size() - 1) {
+            holder.mDivider.setVisibility(View.GONE);
+        }
         list.add(holder);
         int totalBrightness = 0;
         int numLights = 0;
@@ -148,7 +154,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                         + seekBar.getThumbOffset() / 2
                         + (seekBar).getThumb().getBounds().exactCenterX());
                 holder.percentageIndicatorWhole.setX(floatingPosition
-                        + holder.mLinearLayout.getPaddingLeft() * 4);
+                        + holder.mLinearLayout.getPaddingLeft() * 2);
             }
 
             @Override
