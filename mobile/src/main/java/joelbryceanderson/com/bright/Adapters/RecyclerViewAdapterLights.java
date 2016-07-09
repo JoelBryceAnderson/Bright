@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -106,26 +107,35 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         holder.mLightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    holder.mBrightnessBar.setEnabled(true);
+                if (lightList.get(position).getLastKnownLightState().isReachable()) {
+                    if (isChecked) {
+                        holder.mBrightnessBar.setEnabled(true);
+                    } else {
+                        holder.mBrightnessBar.setEnabled(false);
+                    }
+                    PHLightState lightState = new PHLightState();
+                    lightState.setOn(isChecked);
+                    mBridge.updateLightState(lightList.get(position), lightState);
                 } else {
-                    holder.mBrightnessBar.setEnabled(false);
+                    holder.mLightSwitch.setChecked(!isChecked);
+                    Snackbar snackbar = Snackbar.make(holder.mLinearLayout,
+                            "Light is not connected.", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
                 }
-                PHLightState lightState = new PHLightState();
-                lightState.setOn(isChecked);
-                mBridge.updateLightState(lightList.get(position), lightState);
             }
         });
         if (lightList.get(position).supportsColor()) {
             PHLightState state = lightList.get(position).getLastKnownLightState();
-            int color = PHUtilities.colorFromXY(new float[]{state.getX(), state.getY()}, "LCT001");
-            holder.mImageView.setColorFilter(color);
-            holder.mImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    createDialog(mContext, position);
-                }
-            });
+            if (state.isReachable()) {
+                int color = PHUtilities.colorFromXY(new float[]{state.getX(), state.getY()}, "LCT001");
+                holder.mImageView.setColorFilter(color);
+                holder.mImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        createDialog(mContext, position);
+                    }
+                });
+            }
         }
         if (!lightList.get(position).getLastKnownLightState().isOn()) {
             holder.mBrightnessBar.setEnabled(false);
@@ -148,7 +158,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                         + seekBar.getThumbOffset() / 2
                         + (seekBar).getThumb().getBounds().exactCenterX());
                 holder.percentageIndicatorWhole.setX(floatingPosition
-                        - (seekBar.getPaddingLeft() / 2) - holder.mLinearLayout.getPaddingLeft());
+                        + holder.mLinearLayout.getPaddingLeft() * 4);
 
                 if (progress > 0) {
                     PHLightState lightState = new PHLightState();
@@ -193,6 +203,11 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
             holder.percentageIndicatorText.setTextColor(Color.parseColor("#000000"));
             holder.mLinearLayout.setBackgroundColor(Color.parseColor("#000000"));
             holder.mTextView.setTextColor(Color.parseColor("#ffffff"));
+        }
+        if (!lightList.get(position).getLastKnownLightState().isReachable()) {
+            holder.mBrightnessBar.setVisibility(View.GONE);
+            holder.mImageView.setImageResource(R.drawable.ic_not_reachable);
+            holder.mImageView.setPadding(24,24,24,24);
         }
     }
 

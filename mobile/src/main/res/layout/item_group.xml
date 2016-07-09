@@ -17,47 +17,47 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:clickable="true"
         android:id="@+id/whole_item_group"
-        android:focusable="true"
         android:background="?android:selectableItemBackground"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:id="@+id/image_view_group"
+            android:src="@drawable/circle_color"
+            android:layout_gravity="center_vertical"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
             android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/image_view_group"
-                android:src="@drawable/circle_color"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"/>
 
             <TextView
                 android:id="@+id/group_name"
-                android:paddingLeft="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:textSize="16sp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/image_view_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <Switch
-                android:id="@+id/group_toggle"
-                android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/brightness_bar_group"
+                android:paddingTop="16dp"
+                android:max="250"
+                android:layout_marginTop="16dp"/>
 
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/brightness_bar_group"
-            android:paddingTop="16dp"
-            android:max="250"
-            android:layout_marginLeft="50dp"/>
+        </LinearLayout>
+
+        <Switch
+            android:id="@+id/group_toggle"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

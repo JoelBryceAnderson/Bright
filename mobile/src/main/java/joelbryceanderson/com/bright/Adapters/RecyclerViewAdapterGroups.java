@@ -148,7 +148,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
                         + seekBar.getThumbOffset() / 2
                         + (seekBar).getThumb().getBounds().exactCenterX());
                 holder.percentageIndicatorWhole.setX(floatingPosition
-                        - (seekBar.getPaddingLeft() / 2) - holder.mLinearLayout.getPaddingLeft());
+                        + holder.mLinearLayout.getPaddingLeft() * 4);
             }
 
             @Override
