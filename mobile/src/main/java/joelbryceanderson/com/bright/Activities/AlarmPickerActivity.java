@@ -79,14 +79,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
         hours = intent.getIntExtra("selectedHour", 0);
         minutes = intent.getIntExtra("selectedMinute", 0);
 
-
-        //Set up the Action Bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_alarm_picker);
-        fab = (FloatingActionButton) findViewById(R.id.fab_done_alarm);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Create an Alarm");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        setUpToolBar();
 
         turnLightsOnOff = (Switch) findViewById(R.id.turn_lights_on_switch_alarm_picker);
         switchRepeating = (Switch) findViewById(R.id.switch_repeating);
@@ -137,11 +130,11 @@ public class AlarmPickerActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    turnLightsOnOff.setText("Turn lights on");
+                    turnLightsOnOff.setText(getString(R.string.turn_lights_on));
                     colorSelector.setColorFilter(currentColor);
                 } else {
                     colorSelector.setColorFilter(Color.parseColor("#000000"));
-                    turnLightsOnOff.setText("Turn lights off");
+                    turnLightsOnOff.setText(getString(R.string.turn_lights_off));
                 }
             }
         });
@@ -187,6 +180,17 @@ public class AlarmPickerActivity extends AppCompatActivity {
         }
 
         hideFab();
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void setUpToolBar() {
+        //Set up the Action Bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_alarm_picker);
+        fab = (FloatingActionButton) findViewById(R.id.fab_done_alarm);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Create an Alarm");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
     }
 
     @Override

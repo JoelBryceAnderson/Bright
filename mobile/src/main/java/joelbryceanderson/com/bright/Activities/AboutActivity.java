@@ -23,27 +23,36 @@ public class AboutActivity extends AppCompatActivity {
             setTheme(R.style.AppThemeNight);
         }
 
+
         //Set up the views
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        setUpToolBar();
+        if (darkMode) {
+            setUpDarkMode();
+        }
+    }
 
+    private void setUpDarkMode() {
+        CardView cardView = (CardView) findViewById(R.id.about_card);
+        TextView aboutAppName = (TextView) findViewById(R.id.about_app_name);
+        TextView aboutAppCreator = (TextView) findViewById(R.id.about_app_creator);
+        TextView aboutAppVersion = (TextView) findViewById(R.id.about_version);
+
+        //Adjust View Colors for DarkMode
+        cardView.setCardBackgroundColor(Color.parseColor("#263238"));
+        aboutAppName.setTextColor(Color.parseColor("#ffffff"));
+        aboutAppCreator.setTextColor(Color.parseColor("#ffffff"));
+        aboutAppVersion.setTextColor(Color.parseColor("#ffffff"));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void setUpToolBar() {
         //Set up the Action Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_about);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("About");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        //Adjust View Colors for DarkMode
-        if (darkMode) {
-            CardView cardView = (CardView) findViewById(R.id.about_card);
-            cardView.setCardBackgroundColor(Color.parseColor("#263238"));
-            TextView aboutAppName = (TextView) findViewById(R.id.about_app_name);
-            TextView aboutAppCreator = (TextView) findViewById(R.id.about_app_creator);
-            TextView aboutAppVersion = (TextView) findViewById(R.id.about_version);
-            aboutAppName.setTextColor(Color.parseColor("#ffffff"));
-            aboutAppCreator.setTextColor(Color.parseColor("#ffffff"));
-            aboutAppVersion.setTextColor(Color.parseColor("#ffffff"));
-        }
     }
 
     @Override
