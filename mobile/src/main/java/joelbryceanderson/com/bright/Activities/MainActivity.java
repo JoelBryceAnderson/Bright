@@ -17,7 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     private Boolean darkMode;
     private int currentlySelected;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         boolean groupsOnStartup = prefs.getBoolean("groups_on_startup", false);
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity
         setFabAction(currentlySelected);
         displayView(navigationView.getMenu().getItem(currentlySelected).getItemId());
         navigationView.getMenu().getItem(currentlySelected).setChecked(true);
+        initDarkModeToggle();
 
         if (darkMode) {
             fab.setImageTintList(ColorStateList.valueOf(Color.BLACK));
@@ -143,6 +147,9 @@ public class MainActivity extends AppCompatActivity
                 setFabAction(2);
                 currentlySelected = 2;
                 break;
+            case R.id.nav_my_bridge:
+                intent = new Intent(this, MyBridgeActivity.class);
+                break;
             case R.id.nav_settings:
                 intent = new Intent(this, SettingsActivity.class);
                 break;
@@ -153,14 +160,15 @@ public class MainActivity extends AppCompatActivity
             ft.replace(R.id.frame_layout, fragment);
             ft.commit();
         }
-
-        // set the toolbar title
-        if (getSupportActionBar() != null) {
+        if (getSupportActionBar() != null && fragment != null) {
             getSupportActionBar().setTitle(title);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (fragment != null || intent != null) {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
+
         if (intent != null) {
             startActivity(intent);
         }
@@ -288,5 +296,63 @@ public class MainActivity extends AppCompatActivity
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         finish();
         startActivity(intent);
+    }
+
+    private void initDarkModeToggle() {
+        View darkModeAction = navigationView
+                .getMenu().findItem(R.id.nav_dark_mode).getActionView();
+
+        Switch darkModeSwitch = (Switch) darkModeAction.findViewById(R.id.dark_mode_switch);
+        darkModeSwitch.setChecked(darkMode);
+        darkModeSwitch.setOnCheckedChangeListener(darkModeSwitch());
+    }
+
+    private CompoundButton.OnCheckedChangeListener darkModeSwitch() {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                drawer.addDrawerListener(enableDarkMode(b));
+            }
+        };
+    }
+
+    private DrawerLayout.DrawerListener enableDarkMode(final boolean b) {
+        return new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                toggleDarkMode(b);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        };
+    }
+
+    private void toggleDarkMode(boolean b) {
+        final SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
+        prefs.edit().putBoolean("dark_mode", b).apply();
+        restartApp();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    private void restartApp() {
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 }

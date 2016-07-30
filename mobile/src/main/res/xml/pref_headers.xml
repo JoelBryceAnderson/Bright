@@ -8,11 +8,6 @@
         android:title="Appearance" />
 
     <header
-        android:id="@+id/bridge_preference_header"
-        android:icon="@drawable/ic_network"
-        android:title="My Bridge" />
-
-    <header
         android:id="@+id/about_preference_header"
         android:icon="@drawable/ic_about"
         android:title="About" />

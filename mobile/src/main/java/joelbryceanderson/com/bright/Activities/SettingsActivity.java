@@ -100,10 +100,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Intent i = new Intent(SettingsActivity.this, AboutActivity.class);
             startActivity(i);
         }
-        if (header.id == R.id.bridge_preference_header) {
-            Intent i = new Intent(SettingsActivity.this, MyBridgeActivity.class);
-            startActivity(i);
-        }
     }
 
     /**
@@ -157,11 +153,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(
                 SharedPreferences sharedPreferences, String key) {
-            if (key.equals("dark_mode")) {
-                Intent i = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-            }
         }
     }
 }
