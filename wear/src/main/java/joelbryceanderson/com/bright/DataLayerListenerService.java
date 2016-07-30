@@ -63,8 +63,18 @@ public class DataLayerListenerService extends WearableListenerService {
                 SharedPreferences.Editor edit = appSharedPrefs.edit();
                 edit.remove(name);
                 edit.putStringSet("groups", stringSet);
-                edit.commit();
+                edit.apply();
+            } else if ("/GROUPS_CLEAR".equals(path)) {
+                clearGroups();
             }
         }
+    }
+
+    private void clearGroups() {
+        SharedPreferences appSharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(this.getApplicationContext());
+        SharedPreferences.Editor edit = appSharedPrefs.edit();
+        edit.putStringSet("groups", new HashSet<>());
+        edit.apply();
     }
 }

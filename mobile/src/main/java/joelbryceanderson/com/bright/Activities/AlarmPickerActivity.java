@@ -19,6 +19,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,11 +57,12 @@ public class AlarmPickerActivity extends AppCompatActivity {
     private Boolean darkMode;
     private ImageView colorSelector;
     private Switch turnLightsOnOff;
-    private Switch switchRepeating;
+    private CheckBox switchRepeating;
     private int hours;
     private int minutes;
     private int mBitWise;
     private boolean[] daysSelected;
+    private Dialog lightDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
         setUpToolBar();
 
         turnLightsOnOff = (Switch) findViewById(R.id.turn_lights_on_switch_alarm_picker);
-        switchRepeating = (Switch) findViewById(R.id.switch_repeating);
+        switchRepeating = (CheckBox) findViewById(R.id.switch_repeating);
         final LinearLayout daysLayout = (LinearLayout) findViewById(R.id.days_of_week_layout);
 
         switchRepeating.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -139,33 +142,6 @@ public class AlarmPickerActivity extends AppCompatActivity {
             }
         });
 
-        //Initialize recycler view
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.alarm_picker_recycler);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
-
-        //Get all lights on the Hue Bridge, put them into the recycler view
-        PHHueSDK phHueSDK = PHHueSDK.getInstance();
-        PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
-        List<PHLight> myLights = cache.getAllLights();
-        adapter = new GroupPickerAdapter(myLights, false);
-        recyclerView.setAdapter(adapter);
-
-        //Hide the FAB on scroll
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    hideFab();
-                } else {
-                    showFab();
-                }
-            }
-        });
-
         //Handle FAB click
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,7 +155,42 @@ public class AlarmPickerActivity extends AppCompatActivity {
             fab.setImageTintList(ColorStateList.valueOf(Color.BLACK));
         }
 
+        initLightDialog();
         hideFab();
+    }
+
+    private void initLightDialog() {
+        lightDialog = new Dialog(this);
+
+        lightDialog.setContentView(R.layout.light_picker_dialog);
+        //Initialize recycler view
+        RecyclerView recyclerView = (RecyclerView) lightDialog
+                .findViewById(R.id.alarm_picker_recycler);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
+
+        //Get all lights on the Hue Bridge, put them into the recycler view
+        PHHueSDK phHueSDK = PHHueSDK.getInstance();
+        PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
+        List<PHLight> myLights = cache.getAllLights();
+        adapter = new GroupPickerAdapter(myLights, false);
+        recyclerView.setAdapter(adapter);
+
+        lightDialog.create();
+
+        Button lightButton = (Button) findViewById(R.id.light_picker_button_alarms);
+        lightButton.setOnClickListener(lightsDialogClick());
+    }
+
+    private View.OnClickListener lightsDialogClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openLightsDialog();
+            }
+        };
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -450,5 +461,9 @@ public class AlarmPickerActivity extends AppCompatActivity {
             }
         });
         dialog.show();
+    }
+
+    private void openLightsDialog() {
+        lightDialog.show();
     }
 }

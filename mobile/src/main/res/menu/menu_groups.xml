@@ -2,8 +2,9 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-   <item
-        android:id="@+id/find_new_bridge"
-        android:title="@string/menu_find_bridge"
+    <item
+        android:id="@+id/sync_groups_wear"
+        android:title="Sync with Wear"
+        android:icon="@drawable/ic_sync_wear"
         app:showAsAction="always" />
 </menu>

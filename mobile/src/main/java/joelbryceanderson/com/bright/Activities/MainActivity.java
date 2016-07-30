@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity
     private Boolean darkMode;
     private int currentlySelected;
     private NavigationView navigationView;
+    private Toolbar toolbar;
+    private Fragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +55,14 @@ public class MainActivity extends AppCompatActivity
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         phHueSDK = PHHueSDK.create();
         setSupportActionBar(toolbar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -117,8 +119,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void displayView(int viewId) {
-
-        Fragment fragment = null;
         Intent intent = null;
         String title = getString(R.string.app_name);
         switch (viewId) {
@@ -159,6 +159,9 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frame_layout, fragment);
             ft.commit();
+            if (toolbar.getMenu() != null) {
+                toolbar.getMenu().clear();
+            }
         }
         if (getSupportActionBar() != null && fragment != null) {
             getSupportActionBar().setTitle(title);
@@ -173,6 +176,22 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         }
         showFAB();
+    }
+
+    public void showSyncMenu() {
+        toolbar.inflateMenu(R.menu.menu_groups);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sync_groups_wear:
+                if (fragment instanceof GroupsFragment) {
+                    ((GroupsFragment) fragment).resync();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

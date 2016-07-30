@@ -76,6 +76,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle connectionHint) {
+                        ((MainActivity) getActivity()).showSyncMenu();
                     }
                     @Override
                     public void onConnectionSuspended(int cause) {
@@ -197,7 +198,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         SharedPreferences.Editor edit = appSharedPrefs.edit();
         edit.remove(name);
         edit.putStringSet("myGroups", stringSet);
-        edit.commit();
+        edit.apply();
         phHueSDK.getSelectedBridge().deleteGroup(group.getIdentifier(), null);
         removeDataItem(name);
         Snackbar snackbar = Snackbar.make(frameLayout, "Group deleted",
@@ -255,7 +256,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
                     }
                 });
 
-                edit.commit();
+                edit.apply();
             }
         });
         snackbar.show();
@@ -283,5 +284,23 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         map.putString("name", name);
         map.putBoolean("hasColor", hasColor);
         Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest().setUrgent());
+    }
+
+    public void resync() {
+        clearGroups();
+        syncAllGroups();
+    }
+
+    public void clearGroups() {
+        if(mGoogleApiClient != null) {
+            final PutDataMapRequest putRequest = PutDataMapRequest.create("/GROUPS_CLEAR");
+            Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest().setUrgent());
+        }
+    }
+
+    public void syncAllGroups() {
+        for (LightGroup group : lightGroupList) {
+            syncDataItem(group.getName(), group.hasAnyColor());
+        }
     }
 }
