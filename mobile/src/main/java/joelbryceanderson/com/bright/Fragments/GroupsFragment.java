@@ -76,7 +76,9 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle connectionHint) {
-                        ((MainActivity) getActivity()).showSyncMenu();
+                        if (((MainActivity) getActivity()).toolbarIsEmpty()) {
+                            ((MainActivity) getActivity()).showSyncMenu();
+                        }
                     }
                     @Override
                     public void onConnectionSuspended(int cause) {

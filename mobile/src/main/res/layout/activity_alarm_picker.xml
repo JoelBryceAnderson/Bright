@@ -43,60 +43,61 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
-                    android:layout_margin="16dp"
                     android:animateLayoutChanges="true"
                     android:id="@+id/is_on_layout"
                     android:layout_height="wrap_content">
 
-                    <RelativeLayout
+                    <LinearLayout
+                        android:id="@+id/alarm_picker_banner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="16dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:background="@color/colorAccent"
+                        android:elevation="4dp"
+                        android:orientation="vertical">
+                        <Switch
+                            android:id="@+id/turn_lights_on_switch_alarm_picker"
+                            android:layout_width="match_parent"
+                            android:text="@string/turn_lights_on"
+                            android:fontFamily="sans-serif-thin"
+                            android:textSize="24sp"
+                            android:textColor="@color/White"
+                            android:thumbTint="@color/White"
+                            android:trackTint="@color/White"
+                            android:checked="true"
+                            android:layout_height="wrap_content" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="60sp"
+                            android:textColor="@color/White"
+                            android:textSize="24sp"
+                            android:layout_marginTop="8dp"
                             android:fontFamily="sans-serif-thin"
-                            android:layout_marginLeft="8dp"
-                            android:layout_alignParentStart="true"
-                            android:text="4:20"/>
+                            android:text="@string/at"/>
 
-                        <Switch
+                        <TextView
                             android:layout_width="wrap_content"
-                            android:text="Turn lights on"
-                            android:textSize="16sp"
-                            android:id="@+id/turn_lights_on_switch_alarm_picker"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:checked="true"
-                            android:layout_height="wrap_content" />
-                    </RelativeLayout>
-
-
-                    <ImageView
-                        android:layout_height="50dp"
-                        android:layout_width="50dp"
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/circle_color_alarm_picker"
-                        android:src="@drawable/circle_color" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="16dp"
-                        android:layout_height="wrap_content">
-
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:text="Repeat"
-                            android:textSize="16sp"
-                            android:layout_marginTop="16dp"
-                            android:id="@+id/switch_repeating"
-                            android:checked="false"
-                            android:layout_height="wrap_content" />
-
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/White"
+                            android:layout_marginTop="8dp"
+                            android:textSize="50sp"
+                            android:fontFamily="sans-serif-thin"
+                            android:text="8:00 am"/>
                     </LinearLayout>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:text="Repeat"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:id="@+id/switch_repeating"
+                        android:checked="false"
+                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -189,11 +190,35 @@
 
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/light_picker_button_alarms"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Choose Lights"/>
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <ImageView
+                            android:id="@+id/light_picker_button_alarms"
+                            android:layout_marginTop="16dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:padding="16dp"
+                            android:tint="@color/colorAccent"
+                            android:background="?attr/selectableItemBackground"
+                            android:src="@drawable/ic_lightbulb"/>
+
+                        <ImageView
+                            android:id="@+id/circle_color_alarm_picker"
+                            android:layout_marginTop="16dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:padding="16dp"
+                            android:tint="@color/colorAccent"
+                            android:background="?attr/selectableItemBackground"
+                            android:src="@drawable/ic_colors" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

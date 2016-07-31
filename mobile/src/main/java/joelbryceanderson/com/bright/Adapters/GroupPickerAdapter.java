@@ -18,7 +18,6 @@ import com.philips.lighting.model.PHLight;
 import java.util.ArrayList;
 import java.util.List;
 
-import joelbryceanderson.com.bright.Activities.AlarmPickerActivity;
 import joelbryceanderson.com.bright.Activities.GroupPickerActivity;
 import joelbryceanderson.com.bright.R;
 
@@ -85,8 +84,6 @@ public class GroupPickerAdapter extends RecyclerView.Adapter<GroupPickerAdapter.
                     checked[position] = true;
                     if (group) {
                         ((GroupPickerActivity) mContext).showFab();
-                    } else {
-                        ((AlarmPickerActivity) mContext).showFab();
                     }
                 } else {
                     checked[position] = false;
@@ -96,8 +93,6 @@ public class GroupPickerAdapter extends RecyclerView.Adapter<GroupPickerAdapter.
                     if (listToReturn.isEmpty()) {
                         if (group) {
                             ((GroupPickerActivity) mContext).hideFab();
-                        } else {
-                            ((AlarmPickerActivity) mContext).hideFab();
                         }
                     }
                 }

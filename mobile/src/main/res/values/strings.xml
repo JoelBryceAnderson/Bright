@@ -54,6 +54,7 @@
     <string name="bright_description">An app for Philips Hue</string>
     <string name="color_spectrum">Color Spectrum</string>
 
-    <string name="turn_lights_on">Turn lights on</string>
-    <string name="turn_lights_off">Turn lights off</string>
+    <string name="turn_lights_on">Lights On</string>
+    <string name="turn_lights_off">Lights Off</string>
+    <string name="at">at</string>
 </resources>

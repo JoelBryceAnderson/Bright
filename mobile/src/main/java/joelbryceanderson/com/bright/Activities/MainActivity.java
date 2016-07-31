@@ -374,4 +374,8 @@ public class MainActivity extends AppCompatActivity
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
+
+    public boolean toolbarIsEmpty() {
+        return toolbar.getMenu().size() == 0;
+    }
 }

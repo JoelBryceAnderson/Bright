@@ -1,7 +1,10 @@
 package joelbryceanderson.com.bright.Activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -13,13 +16,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewAnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -62,7 +67,8 @@ public class AlarmPickerActivity extends AppCompatActivity {
     private int minutes;
     private int mBitWise;
     private boolean[] daysSelected;
-    private Dialog lightDialog;
+    private AlertDialog lightDialog;
+    private LinearLayout colorBanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +116,8 @@ public class AlarmPickerActivity extends AppCompatActivity {
             }
         });
 
+        colorBanner = (LinearLayout) findViewById(R.id.alarm_picker_banner);
+
         //Handle the days of the week
         daysSelected = new boolean[7];
         for (int i = 0; i < 7; ++i) {
@@ -134,9 +142,11 @@ public class AlarmPickerActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     turnLightsOnOff.setText(getString(R.string.turn_lights_on));
-                    colorSelector.setColorFilter(currentColor);
+                    animateBanner(currentColor);
+                    colorSelector.setColorFilter(null);
                 } else {
                     colorSelector.setColorFilter(Color.parseColor("#000000"));
+                    animateBanner(Color.parseColor("#000000"));
                     turnLightsOnOff.setText(getString(R.string.turn_lights_off));
                 }
             }
@@ -159,29 +169,71 @@ public class AlarmPickerActivity extends AppCompatActivity {
         hideFab();
     }
 
+    private void animateBanner(final int toColor) {
+        Animator animator = ViewAnimationUtils.createCircularReveal(
+                colorBanner,
+                colorBanner.getWidth() / 2,
+                colorBanner.getHeight() / 2, 0,
+                colorBanner.getWidth() / 2);
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                colorBanner.setBackgroundColor(toColor);
+            }
+        });
+
+        animator.setStartDelay(200);
+        animator.setDuration(200);
+        animator.start();
+    }
+
     private void initLightDialog() {
-        lightDialog = new Dialog(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.light_picker_dialog, null);
+        AlertDialog.Builder lightDialogBuilder = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Done", checkShowFab())
+                .setTitle("Choose Lights");
 
-        lightDialog.setContentView(R.layout.light_picker_dialog);
         //Initialize recycler view
-        RecyclerView recyclerView = (RecyclerView) lightDialog
-                .findViewById(R.id.alarm_picker_recycler);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
+        RecyclerView recyclerView = (RecyclerView) dialogView.findViewById(R.id.alarm_picker_recycler);
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+            LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+            manager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(manager);
 
-        //Get all lights on the Hue Bridge, put them into the recycler view
-        PHHueSDK phHueSDK = PHHueSDK.getInstance();
-        PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
-        List<PHLight> myLights = cache.getAllLights();
-        adapter = new GroupPickerAdapter(myLights, false);
-        recyclerView.setAdapter(adapter);
+            //Get all lights on the Hue Bridge, put them into the recycler view
+            PHHueSDK phHueSDK = PHHueSDK.getInstance();
+            PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
+            List<PHLight> myLights = cache.getAllLights();
+            adapter = new GroupPickerAdapter(myLights, false);
+            recyclerView.setAdapter(adapter);
+        }
 
-        lightDialog.create();
+        lightDialog = lightDialogBuilder.create();
 
-        Button lightButton = (Button) findViewById(R.id.light_picker_button_alarms);
+
+        ImageView lightButton = (ImageView) findViewById(R.id.light_picker_button_alarms);
         lightButton.setOnClickListener(lightsDialogClick());
+    }
+
+    private DialogInterface.OnClickListener checkShowFab() {
+        return new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                checkLights();
+            }
+        };
+    }
+
+    private void checkLights() {
+        if (adapter.getListToReturn().size() > 0) {
+            showFab();
+        } else {
+            hideFab();
+        }
     }
 
     private View.OnClickListener lightsDialogClick() {
@@ -191,6 +243,10 @@ public class AlarmPickerActivity extends AppCompatActivity {
                 openLightsDialog();
             }
         };
+    }
+
+    private void openLightsDialog() {
+        lightDialog.show();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -380,7 +436,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentColor = PHUtilities.colorFromXY(new float[]{0.5134f, 0.4149f}, "LCT001");
-                colorSelector.setColorFilter(currentColor);
+                animateBanner(currentColor);
                 dialog.cancel();
             }
         });
@@ -389,7 +445,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentColor = PHUtilities.colorFromXY(new float[]{0.4596f, 0.4105f}, "LCT001");
-                colorSelector.setColorFilter(currentColor);
+                animateBanner(currentColor);
                 dialog.cancel();
             }
         });
@@ -399,7 +455,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentColor = PHUtilities.colorFromXY(new float[]{0.4449f, 0.4066f}, "LCT001");
-                colorSelector.setColorFilter(currentColor);
+                animateBanner(currentColor);
                 dialog.cancel();
             }
         });
@@ -409,7 +465,7 @@ public class AlarmPickerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentColor = PHUtilities.colorFromXY(new float[]{0.3693f, 0.3695f}, "LCT001");
-                colorSelector.setColorFilter(currentColor);
+                animateBanner(currentColor);
                 dialog.cancel();
             }
         });
@@ -456,14 +512,10 @@ public class AlarmPickerActivity extends AppCompatActivity {
         color.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                colorSelector.setColorFilter(currentColor);
+                animateBanner(currentColor);
                 dialog.cancel();
             }
         });
         dialog.show();
-    }
-
-    private void openLightsDialog() {
-        lightDialog.show();
     }
 }
