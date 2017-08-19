@@ -39,7 +39,7 @@ import java.util.Set;
 import joelbryceanderson.com.bright.Activities.GroupPickerActivity;
 import joelbryceanderson.com.bright.Activities.MainActivity;
 import joelbryceanderson.com.bright.Adapters.RecyclerViewAdapterGroups;
-import joelbryceanderson.com.bright.LightGroup;
+import joelbryceanderson.com.bright.model.LightGroup;
 import joelbryceanderson.com.bright.R;
 
 
@@ -76,9 +76,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle connectionHint) {
-                        if (((MainActivity) getActivity()).toolbarIsEmpty()) {
-                            ((MainActivity) getActivity()).showSyncMenu();
-                        }
+
                     }
                     @Override
                     public void onConnectionSuspended(int cause) {

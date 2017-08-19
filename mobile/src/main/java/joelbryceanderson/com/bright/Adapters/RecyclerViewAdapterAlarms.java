@@ -180,7 +180,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         }
 
         //Set ImageView
-        if (thisSchedule.getLightState() != null) {
+        if (thisSchedule.getLightState() != null && thisSchedule.getLightState().isOn() != null) {
             if (thisSchedule.getLightState().isOn()) {
                 if (thisSchedule.getLightState().getX() != null &&
                         thisSchedule.getLightState().getY() != null) {

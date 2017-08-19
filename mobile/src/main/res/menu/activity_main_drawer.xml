@@ -1,36 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <group android:checkableBehavior="single"
-        android:id="@+id/group1">
-        <item
-            android:id="@+id/nav_lights"
-            android:icon="@drawable/ic_menu_lightbulb"
-            android:title="@string/lights" />
-        <item
-            android:id="@+id/nav_groups"
-            android:icon="@drawable/ic_menu_traffic"
-            android:title="@string/groups" />
-        <item
-            android:id="@+id/nav_alarms"
-            android:icon="@drawable/ic_menu_alarm"
-            android:title="@string/alarms" />
-    </group>
-
-    <group android:checkableBehavior="none"
-        android:id="@+id/group2">
-        <item
-            android:id="@+id/nav_dark_mode"
-            android:title="@string/dark_mode"
-            app:showAsAction="always"
-            app:actionLayout="@layout/nav_dark_mode_toggle" />
-        <item
-            android:id="@+id/nav_my_bridge"
-            android:title="@string/my_bridge" />
-        <item
-            android:id="@+id/nav_settings"
-            android:title="@string/settings" />
-    </group>
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_lights"
+        android:icon="@drawable/ic_menu_lightbulb"
+        android:title="@string/lights" />
+    <item
+        android:id="@+id/nav_groups"
+        android:icon="@drawable/ic_menu_traffic"
+        android:title="@string/groups" />
+    <item
+        android:id="@+id/nav_alarms"
+        android:icon="@drawable/ic_menu_alarm"
+        android:title="@string/alarms" />
 </menu>

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 import joelbryceanderson.com.bright.Fragments.GroupsFragment;
-import joelbryceanderson.com.bright.LightGroup;
+import joelbryceanderson.com.bright.model.LightGroup;
 import joelbryceanderson.com.bright.R;
 
 /**

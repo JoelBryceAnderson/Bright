@@ -234,11 +234,6 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         ImageView presetThree = (ImageView) dialog.findViewById(R.id.preset_three);
         ImageView presetFour = (ImageView) dialog.findViewById(R.id.preset_four);
 
-        presetOne.setColorFilter(PHUtilities.colorFromXY(new float[]{0.5134f, 0.4149f}, "LCT001"));
-        presetTwo.setColorFilter(PHUtilities.colorFromXY(new float[]{0.4596f, 0.4105f}, "LCT001"));
-        presetThree.setColorFilter(PHUtilities.colorFromXY(new float[]{0.4449f, 0.4066f}, "LCT001"));
-        presetFour.setColorFilter(PHUtilities.colorFromXY(new float[]{0.3693f, 0.3695f}, "LCT001"));
-
         presetOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

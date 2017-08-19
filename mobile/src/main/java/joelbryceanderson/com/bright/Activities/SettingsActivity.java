@@ -99,6 +99,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (header.id == R.id.about_preference_header) {
             Intent i = new Intent(SettingsActivity.this, AboutActivity.class);
             startActivity(i);
+        } else if (header.id == R.id.bridge_preference_header) {
+            Intent i = new Intent(SettingsActivity.this, MyBridgeActivity.class);
+            startActivity(i);
         }
     }
 
@@ -150,9 +153,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onPause();
         }
 
+        private void restartApp() {
+            Intent i = new Intent(getActivity(), MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        }
+
         @Override
         public void onSharedPreferenceChanged(
                 SharedPreferences sharedPreferences, String key) {
+            if (key.equals(getString(R.string.dark_mode_key))) {
+                restartApp();
+            }
         }
     }
 }

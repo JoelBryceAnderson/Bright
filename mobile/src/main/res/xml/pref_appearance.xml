@@ -4,4 +4,9 @@
         android:summary="Open the groups page when starting the app."
         android:key="groups_on_startup"
         android:title="Groups on Startup" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:summary="Use Bright's dark theme."
+        android:key="@string/dark_mode_key"
+        android:title="@string/dark_mode" />
 </PreferenceScreen>

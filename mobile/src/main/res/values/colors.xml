@@ -20,4 +20,9 @@
 
     <color name="White">#ffffff</color>
     <color name="Black">#000000</color>
+
+    <color name="white_four">#feb74b</color>
+    <color name="white_three">#fecd6b</color>
+    <color name="white_two">#fed382</color>
+    <color name="white_one">#feefc7</color>
 </resources>

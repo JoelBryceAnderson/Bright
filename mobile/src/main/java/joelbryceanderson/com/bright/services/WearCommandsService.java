@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright;
+package joelbryceanderson.com.bright.services;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLightState;
 
 import joelbryceanderson.com.bright.Hue.HueSharedPreferences;
+import joelbryceanderson.com.bright.model.LightGroup;
 
 /**
  * Created by JAnderson on 5/16/16.

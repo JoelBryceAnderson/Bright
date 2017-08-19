@@ -6,20 +6,17 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.Switch;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
@@ -32,7 +29,7 @@ import joelbryceanderson.com.bright.Hue.PHHomeActivity;
 import joelbryceanderson.com.bright.R;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private boolean lightsOff = true;
     private PHHueSDK phHueSDK;
@@ -41,7 +38,7 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     private Boolean darkMode;
     private int currentlySelected;
-    private NavigationView navigationView;
+    private BottomNavigationView mNavigationView;
     private Toolbar toolbar;
     private Fragment fragment = null;
 
@@ -55,18 +52,13 @@ public class MainActivity extends AppCompatActivity
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         phHueSDK = PHHueSDK.create();
         setSupportActionBar(toolbar);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        fab = findViewById(R.id.fab);
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = findViewById(R.id.nav_view);
+        mNavigationView.setOnNavigationItemSelectedListener(this);
 
         boolean groupsOnStartup = prefs.getBoolean("groups_on_startup", false);
         if (groupsOnStartup) {
@@ -80,19 +72,14 @@ public class MainActivity extends AppCompatActivity
         }
 
         setFabAction(currentlySelected);
-        displayView(navigationView.getMenu().getItem(currentlySelected).getItemId());
-        navigationView.getMenu().getItem(currentlySelected).setChecked(true);
-        initDarkModeToggle();
+        displayView(mNavigationView.getMenu().getItem(currentlySelected).getItemId());
+        mNavigationView.getMenu().getItem(currentlySelected).setChecked(true);
 
         if (darkMode) {
             fab.setImageTintList(ColorStateList.valueOf(Color.BLACK));
-            ImageView navHeaderImage = (ImageView) navigationView
-                    .getHeaderView(0).findViewById(R.id.nav_header_image);
-            navHeaderImage.setImageResource(R.drawable.nav_header_dark);
-
-            ImageView navHeaderIcon = (ImageView) navigationView
-                    .getHeaderView(0).findViewById(R.id.nav_header_icon);
-            //navHeaderIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimaryNight));
+            mNavigationView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryNight));
+            mNavigationView.setItemTextColor(ContextCompat.getColorStateList(MainActivity.this, R.color.White));
+            mNavigationView.setItemIconTintList(ContextCompat.getColorStateList(MainActivity.this, R.color.White));
         }
     }
 
@@ -103,23 +90,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         displayView(item.getItemId());
         return true;
     }
 
     public void displayView(int viewId) {
-        Intent intent = null;
         String title = getString(R.string.app_name);
         switch (viewId) {
             case R.id.nav_lights:
@@ -147,48 +123,32 @@ public class MainActivity extends AppCompatActivity
                 setFabAction(2);
                 currentlySelected = 2;
                 break;
-            case R.id.nav_my_bridge:
-                intent = new Intent(this, MyBridgeActivity.class);
-                break;
-            case R.id.nav_settings:
-                intent = new Intent(this, SettingsActivity.class);
-                break;
         }
 
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
             ft.replace(R.id.frame_layout, fragment);
             ft.commit();
-            if (toolbar.getMenu() != null) {
-                toolbar.getMenu().clear();
-            }
         }
         if (getSupportActionBar() != null && fragment != null) {
             getSupportActionBar().setTitle(title);
         }
-
-        if (fragment != null || intent != null) {
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-        }
-
-        if (intent != null) {
-            startActivity(intent);
-        }
         showFAB();
     }
 
-    public void showSyncMenu() {
-        toolbar.inflateMenu(R.menu.menu_groups);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_settings, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sync_groups_wear:
-                if (fragment instanceof GroupsFragment) {
-                    ((GroupsFragment) fragment).resync();
-                }
+            case R.id.settings_item:
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -304,10 +264,6 @@ public class MainActivity extends AppCompatActivity
         fab.setImageDrawable(getDrawable(R.drawable.ic_lightbulb_open));
     }
 
-    public Boolean isDarkMode() {
-        return darkMode;
-    }
-
     public void restartSplashActivity() {
         Intent intent = new Intent(getApplicationContext(), PHHomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -315,67 +271,5 @@ public class MainActivity extends AppCompatActivity
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         finish();
         startActivity(intent);
-    }
-
-    private void initDarkModeToggle() {
-        View darkModeAction = navigationView
-                .getMenu().findItem(R.id.nav_dark_mode).getActionView();
-
-        Switch darkModeSwitch = (Switch) darkModeAction.findViewById(R.id.dark_mode_switch);
-        darkModeSwitch.setChecked(darkMode);
-        darkModeSwitch.setOnCheckedChangeListener(darkModeSwitch());
-    }
-
-    private CompoundButton.OnCheckedChangeListener darkModeSwitch() {
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                drawer.closeDrawer(GravityCompat.START);
-                drawer.addDrawerListener(enableDarkMode(b));
-            }
-        };
-    }
-
-    private DrawerLayout.DrawerListener enableDarkMode(final boolean b) {
-        return new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                toggleDarkMode(b);
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-
-            }
-        };
-    }
-
-    private void toggleDarkMode(boolean b) {
-        final SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
-        prefs.edit().putBoolean("dark_mode", b).apply();
-        restartApp();
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-    }
-
-    private void restartApp() {
-        Intent i = new Intent(this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
-    }
-
-    public boolean toolbarIsEmpty() {
-        return toolbar.getMenu().size() == 0;
     }
 }

@@ -50,34 +50,35 @@ public class LightsFragment extends android.support.v4.app.Fragment {
         PHHueSDK phHueSDK = PHHueSDK.getInstance();
         if (phHueSDK.getSelectedBridge() == null) {
             ((MainActivity)getActivity()).restartSplashActivity();
-        }
-        PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
-        List<PHLight> myLights = cache.getAllLights();
-        MainActivity parent = (MainActivity) getActivity();
+        } else {
+            PHBridgeResourcesCache cache = phHueSDK.getSelectedBridge().getResourceCache();
+            List<PHLight> myLights = cache.getAllLights();
+            MainActivity parent = (MainActivity) getActivity();
 
-        int totalLightsOn = 0;
-        for (PHLight thisLight : myLights) {
-            if (thisLight.getLastKnownLightState().isOn()) {
-                totalLightsOn++;
-            }
-        }
-        if (totalLightsOn > (myLights.size() / 2)) {
-            parent.setFabTogglesOff();
-        }
-
-        adapter = new RecyclerViewAdapterLights(myLights, parent.getBridge());
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    ((MainActivity) getActivity()).hideFAB();
-                } else {
-                    ((MainActivity) getActivity()).showFAB();
+            int totalLightsOn = 0;
+            for (PHLight thisLight : myLights) {
+                if (thisLight.getLastKnownLightState().isOn()) {
+                    totalLightsOn++;
                 }
             }
-        });
+            if (totalLightsOn > (myLights.size() / 2)) {
+                parent.setFabTogglesOff();
+            }
+
+            adapter = new RecyclerViewAdapterLights(myLights, parent.getBridge());
+            recyclerView.setAdapter(adapter);
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (dy > 0) {
+                        ((MainActivity) getActivity()).hideFAB();
+                    } else {
+                        ((MainActivity) getActivity()).showFAB();
+                    }
+                }
+            });
+        }
     }
 
     public void toggleAll(boolean on) {

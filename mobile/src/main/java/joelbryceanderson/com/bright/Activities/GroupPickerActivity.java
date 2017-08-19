@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.Set;
 
 import joelbryceanderson.com.bright.Adapters.GroupPickerAdapter;
-import joelbryceanderson.com.bright.LightGroup;
+import joelbryceanderson.com.bright.model.LightGroup;
 import joelbryceanderson.com.bright.R;
 
 public class GroupPickerActivity extends AppCompatActivity {
