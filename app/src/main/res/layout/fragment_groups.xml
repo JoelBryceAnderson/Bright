@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:id="@+id/groups_frame_layout"
     android:layout_height="match_parent"
-    tools:context="joelbryceanderson.com.bright.Fragments.GroupsFragment">
+    tools:context="joelbryceanderson.com.bright.fragments.GroupsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/groups_recycler"

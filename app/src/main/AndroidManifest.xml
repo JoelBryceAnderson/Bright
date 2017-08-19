@@ -14,11 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Hue.PHHomeActivity"
+            android:name=".hue.PHHomeActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,19 +27,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Hue.PHPushlinkActivity"
+            android:name=".hue.PHPushlinkActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".Activities.GroupPickerActivity"
+            android:name=".activities.GroupPickerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.AboutActivity"
+            android:name=".activities.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.MyBridgeActivity"
+            android:name=".activities.MyBridgeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.AlarmPickerActivity"
+            android:name=".activities.AlarmPickerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
@@ -47,13 +47,13 @@
             android:value="AEdPqrEAAAAIbmi9ZN2qae9tdiCmRDU-9pqmmyjgkWrQNG8vkg" />
 
         <activity
-            android:name=".Activities.SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:theme="@style/AppTheme"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".Activities.MainActivity">
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="joelbryceanderson.com.bright.Activities.MainActivity" />
+                android:value="joelbryceanderson.com.bright.activities.MainActivity" />
         </activity>
 
     </application>

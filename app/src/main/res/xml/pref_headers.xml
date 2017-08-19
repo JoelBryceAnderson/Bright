@@ -3,7 +3,7 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="joelbryceanderson.com.bright.Activities.SettingsActivity$AppearanceFragment"
+        android:fragment="joelbryceanderson.com.bright.activities.SettingsActivity$AppearanceFragment"
         android:icon="@drawable/ic_appearance"
         android:title="Appearance" />
 

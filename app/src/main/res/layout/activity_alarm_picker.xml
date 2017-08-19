@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="joelbryceanderson.com.bright.Activities.GroupPickerActivity">
+    tools:context="joelbryceanderson.com.bright.activities.GroupPickerActivity">
 
     <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false"
-        tools:context="joelbryceanderson.com.bright.Activities.GroupPickerActivity">
+        tools:context="joelbryceanderson.com.bright.activities.GroupPickerActivity">
 
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
