@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Activities;
+package joelbryceanderson.com.bright.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

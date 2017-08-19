@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Fragments;
+package joelbryceanderson.com.bright.fragments;
 
 
 import android.app.Activity;
@@ -32,9 +32,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import joelbryceanderson.com.bright.Activities.AlarmPickerActivity;
-import joelbryceanderson.com.bright.Activities.MainActivity;
-import joelbryceanderson.com.bright.Adapters.RecyclerViewAdapterAlarms;
+import joelbryceanderson.com.bright.activities.AlarmPickerActivity;
+import joelbryceanderson.com.bright.activities.MainActivity;
+import joelbryceanderson.com.bright.adapters.RecyclerViewAdapterAlarms;
 import joelbryceanderson.com.bright.R;
 
 

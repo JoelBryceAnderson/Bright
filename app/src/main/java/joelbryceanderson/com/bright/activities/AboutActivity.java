@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Activities;
+package joelbryceanderson.com.bright.activities;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;

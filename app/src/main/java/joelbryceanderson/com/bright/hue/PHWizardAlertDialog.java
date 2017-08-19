@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Hue;
+package joelbryceanderson.com.bright.hue;
 
 import android.app.Activity;
 import android.app.AlertDialog;

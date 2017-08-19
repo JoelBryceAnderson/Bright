@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Adapters;
+package joelbryceanderson.com.bright.adapters;
 
 import android.app.Dialog;
 import android.content.Context;

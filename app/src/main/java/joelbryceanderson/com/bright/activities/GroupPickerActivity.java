@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Activities;
+package joelbryceanderson.com.bright.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,7 +7,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -35,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import joelbryceanderson.com.bright.Adapters.GroupPickerAdapter;
+import joelbryceanderson.com.bright.adapters.GroupPickerAdapter;
 import joelbryceanderson.com.bright.model.LightGroup;
 import joelbryceanderson.com.bright.R;
 

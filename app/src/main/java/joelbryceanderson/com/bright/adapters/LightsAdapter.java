@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Adapters;
+package joelbryceanderson.com.bright.adapters;
 
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;

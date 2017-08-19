@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Adapters;
+package joelbryceanderson.com.bright.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,7 +18,7 @@ import com.philips.lighting.model.PHLight;
 import java.util.ArrayList;
 import java.util.List;
 
-import joelbryceanderson.com.bright.Activities.GroupPickerActivity;
+import joelbryceanderson.com.bright.activities.GroupPickerActivity;
 import joelbryceanderson.com.bright.R;
 
 public class GroupPickerAdapter extends RecyclerView.Adapter<GroupPickerAdapter.ViewHolder> {

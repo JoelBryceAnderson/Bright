@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Activities;
+package joelbryceanderson.com.bright.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,10 +22,10 @@ import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHLightState;
 
-import joelbryceanderson.com.bright.Fragments.AlarmsFragment;
-import joelbryceanderson.com.bright.Fragments.GroupsFragment;
-import joelbryceanderson.com.bright.Fragments.LightsFragment;
-import joelbryceanderson.com.bright.Hue.PHHomeActivity;
+import joelbryceanderson.com.bright.fragments.AlarmsFragment;
+import joelbryceanderson.com.bright.fragments.GroupsFragment;
+import joelbryceanderson.com.bright.fragments.LightsFragment;
+import joelbryceanderson.com.bright.hue.PHHomeActivity;
 import joelbryceanderson.com.bright.R;
 
 public class MainActivity extends AppCompatActivity

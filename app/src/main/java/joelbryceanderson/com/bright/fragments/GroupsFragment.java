@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Fragments;
+package joelbryceanderson.com.bright.fragments;
 
 
 import android.content.Intent;
@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import joelbryceanderson.com.bright.Activities.GroupPickerActivity;
-import joelbryceanderson.com.bright.Activities.MainActivity;
-import joelbryceanderson.com.bright.Adapters.RecyclerViewAdapterGroups;
+import joelbryceanderson.com.bright.activities.GroupPickerActivity;
+import joelbryceanderson.com.bright.activities.MainActivity;
+import joelbryceanderson.com.bright.adapters.RecyclerViewAdapterGroups;
 import joelbryceanderson.com.bright.model.LightGroup;
 import joelbryceanderson.com.bright.R;
 

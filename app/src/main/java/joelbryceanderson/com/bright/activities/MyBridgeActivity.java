@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Activities;
+package joelbryceanderson.com.bright.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,8 +22,8 @@ import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
 
 
-import joelbryceanderson.com.bright.Hue.HueSharedPreferences;
-import joelbryceanderson.com.bright.Hue.PHHomeActivity;
+import joelbryceanderson.com.bright.hue.HueSharedPreferences;
+import joelbryceanderson.com.bright.hue.PHHomeActivity;
 import joelbryceanderson.com.bright.R;
 
 public class MyBridgeActivity extends AppCompatActivity {

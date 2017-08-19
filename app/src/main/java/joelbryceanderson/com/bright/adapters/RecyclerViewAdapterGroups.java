@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Adapters;
+package joelbryceanderson.com.bright.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,36 +18,36 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.philips.lighting.hue.listener.PHScheduleListener;
 import com.philips.lighting.hue.sdk.utilities.PHUtilities;
 import com.philips.lighting.model.PHBridge;
-import com.philips.lighting.model.PHHueError;
+import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLightState;
-import com.philips.lighting.model.PHSchedule;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
-import joelbryceanderson.com.bright.Fragments.AlarmsFragment;
+import joelbryceanderson.com.bright.fragments.GroupsFragment;
+import joelbryceanderson.com.bright.model.LightGroup;
 import joelbryceanderson.com.bright.R;
 
 /**
  * Created by Joel Anderson on 2/11/16.
- * Adapter for alarms recycler view.
+ * Recycler view adapter for groups
  */
-public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerViewAdapterAlarms.ViewHolder> {
-    private List<PHSchedule> scheduleList;
+public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerViewAdapterGroups.ViewHolder> {
+    private List<LightGroup> lightList;
     private PHBridge mBridge;
     private Context mContext;
-    private AlarmsFragment fragment;
     private int currentColor;
+    private GroupsFragment parent;
     private Boolean darkMode;
     private List<ViewHolder> list = new ArrayList<>();
 
@@ -55,35 +56,44 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         protected TextView mTextView;
-        protected TextView mSubTextView;
         protected Switch mLightSwitch;
         protected LinearLayout mLinearLayout;
         protected ImageView mImageView;
+        protected SeekBar mBrightnessBar;
+
+        protected FloatingActionButton percentageIndicatorFab;
+        protected FrameLayout percentageIndicatorWhole;
+        protected TextView percentageIndicatorText;
         public ViewHolder(View v) {
             super(v);
-            mTextView = (TextView) v.findViewById(R.id.alarm_time);
-            mLightSwitch = (Switch) v.findViewById(R.id.alarm_toggle);
-            mLinearLayout = (LinearLayout) v.findViewById(R.id.whole_item_alarm);
-            mImageView = (ImageView) v.findViewById(R.id.image_view_alarm);
-            mSubTextView = (TextView) v.findViewById(R.id.alarm_days);
+            mTextView = (TextView) v.findViewById(R.id.group_name);
+            mLightSwitch = (Switch) v.findViewById(R.id.group_toggle);
+            mLinearLayout = (LinearLayout) v.findViewById(R.id.whole_item_group);
+            mImageView = (ImageView) v.findViewById(R.id.image_view_group);
+            mBrightnessBar = (SeekBar) v.findViewById(R.id.brightness_bar_group);
+
+            percentageIndicatorFab = (FloatingActionButton)
+                    v.findViewById(R.id.percentage_indicator_fab);
+            percentageIndicatorWhole = (FrameLayout)
+                    v.findViewById(R.id.percentage_indicator_whole);
+            percentageIndicatorText = (TextView) v.findViewById(R.id.percentage_indicator_text);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerViewAdapterAlarms(List<PHSchedule> myDataset,
-                                     PHBridge bridge, AlarmsFragment fragment) {
-        scheduleList = myDataset;
-        this.fragment = fragment;
+    public RecyclerViewAdapterGroups(List<LightGroup> myDataset, PHBridge bridge, GroupsFragment parent) {
+        lightList = myDataset;
+        this.parent = parent;
         mBridge = bridge;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public RecyclerViewAdapterAlarms.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public RecyclerViewAdapterGroups.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_alarm, parent, false);
+                .inflate(R.layout.item_group, parent, false);
         mContext = parent.getContext();
         return new ViewHolder(v);
     }
@@ -91,145 +101,94 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        // - get element from your dataset at this position
+        // - get element from your data set at this position
         // - replace the contents of the view with that element
-        final PHSchedule thisSchedule = scheduleList.get(position);
+        final LightGroup thisGroup = lightList.get(holder.getAdapterPosition());
         list.add(holder);
+        int totalBrightness = 0;
+        int numLights = 0;
+        for (PHLight light : thisGroup.getLights()) {
+            numLights++;
+            totalBrightness += light.getLastKnownLightState().getBrightness();
+        }
+        holder.percentageIndicatorFab.hide();
+        holder.percentageIndicatorFab.setElevation(4);
+        holder.percentageIndicatorWhole.setVisibility(View.GONE);
 
-        holder.mLightSwitch.setChecked(thisSchedule.getStatus().toString().equals("ENABLED"));
+        holder.mBrightnessBar.setProgress(totalBrightness / numLights);
+        holder.mLightSwitch.setChecked(false);
+        holder.mBrightnessBar.setEnabled(false);
+        holder.mTextView.setText(thisGroup.getName());
         holder.mLightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PHLightState state = new PHLightState();
                 if (isChecked) {
-                    thisSchedule.setStatus(PHSchedule.PHScheduleStatus.ENABLED);
-                    mBridge.updateSchedule(thisSchedule, new PHScheduleListener() {
-                        @Override
-                        public void onCreated(PHSchedule phSchedule) {
-
-                        }
-
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError(int i, String s) {
-
-                        }
-
-                        @Override
-                        public void onStateUpdate(Map<String, String> map, List<PHHueError> list) {
-
-                        }
-                    });
+                    state.setOn(true);
+                    holder.mBrightnessBar.setEnabled(true);
                 } else {
-                    thisSchedule.setStatus(PHSchedule.PHScheduleStatus.DISABLED);
-                    mBridge.updateSchedule(thisSchedule, new PHScheduleListener() {
-                        @Override
-                        public void onCreated(PHSchedule phSchedule) {
-
-                        }
-
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError(int i, String s) {
-
-                        }
-
-                        @Override
-                        public void onStateUpdate(Map<String, String> map, List<PHHueError> list) {
-
-                        }
-                    });
+                    state.setOn(false);
+                    holder.mBrightnessBar.setEnabled(false);
                 }
+                mBridge.setLightStateForGroup(thisGroup.getIdentifier(), state);
             }
         });
-
-        //Set Time TextView
-        String timeBuilder = "";
-        Calendar calendar = Calendar.getInstance();
-        if (thisSchedule.getDate() != null) {
-            calendar.setTime(thisSchedule.getDate());
-
-            Boolean AM = true;
-            if (calendar.get(Calendar.HOUR_OF_DAY) > 12) {
-                timeBuilder = timeBuilder.concat(Integer.toString(
-                        calendar.get(Calendar.HOUR_OF_DAY) - 12));
-                AM = false;
-            } else {
-                timeBuilder = timeBuilder.concat(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)));
-            }
-            timeBuilder = timeBuilder.concat(":");
-            if (calendar.get(Calendar.MINUTE) < 10) {
-                timeBuilder = timeBuilder.concat("0");
-            }
-            timeBuilder = timeBuilder.concat(Integer.toString(calendar.get(Calendar.MINUTE)));
-            if (AM) {
-                timeBuilder = timeBuilder.concat(" AM");
-            } else {
-                timeBuilder = timeBuilder.concat(" PM");
-            }
-            holder.mTextView.setText(timeBuilder);
-        } else {
-            holder.mTextView.setText("Alarm from other app");
-        }
-
-        //Set ImageView
-        if (thisSchedule.getLightState() != null && thisSchedule.getLightState().isOn() != null) {
-            if (thisSchedule.getLightState().isOn()) {
-                if (thisSchedule.getLightState().getX() != null &&
-                        thisSchedule.getLightState().getY() != null) {
-                    float xy[] = new float[]{thisSchedule.getLightState().getX(),
-                            thisSchedule.getLightState().getY()};
-                    holder.mImageView.setColorFilter(PHUtilities.colorFromXY(xy, "LCT001"));
-                    holder.mImageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            createDialog(mContext, position);
-                        }
-                    });
+        holder.mBrightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float percentage = (progress * 100.0f) / 250;
+                int intPercentage = (int) percentage;
+                if (intPercentage == 0) {
+                    intPercentage += 1;
                 }
+                holder.percentageIndicatorText
+                        .setText(String.format(Locale.getDefault(), "%d%%", intPercentage));
+
+                int floatingPosition = (int) (seekBar.getX()
+                        + seekBar.getThumbOffset() / 2
+                        + (seekBar).getThumb().getBounds().exactCenterX());
+                holder.percentageIndicatorWhole.setX(floatingPosition
+                        + holder.mLinearLayout.getPaddingLeft() * 3);
             }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                holder.percentageIndicatorWhole.setVisibility(View.VISIBLE);
+                holder.percentageIndicatorFab.show();
+                holder.percentageIndicatorText.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(final SeekBar seekBar) {
+                holder.percentageIndicatorText.setVisibility(View.GONE);
+                holder.percentageIndicatorFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                    @Override
+                    public void onHidden(FloatingActionButton fab) {
+                        super.onHidden(fab);
+                        holder.percentageIndicatorWhole.setVisibility(View.GONE);
+                        PHLightState state = new PHLightState();
+                        state.setBrightness(seekBar.getProgress());
+                        mBridge.setLightStateForGroup(thisGroup.getIdentifier(), state);
+                    }
+                });
+            }
+        });
+        if (thisGroup.hasAnyColor()) {
+            holder.mImageView.setImageResource(R.drawable.color_spectrum_tiny);
+            holder.mImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    createDialog(mContext, holder.getAdapterPosition());
+                }
+            });
         }
 
-        //Set Recurring Days TextView
-        int r = thisSchedule.getRecurringDays();
-        String recurringDays = "";
-        if (r == 127) {
-            recurringDays = "EVERY DAY";
-        } else if (r == 0) {
-            recurringDays = "NO REPEAT";
-        } else {
-            if ((r & (1)) != 0) {
-                recurringDays = recurringDays.concat("SUN ");
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.mLightSwitch.toggle();
             }
-            if ((r & (1 << 6)) != 0) {
-                recurringDays = recurringDays.concat("MON ");
-            }
-            if ((r & (1 << 5)) != 0) {
-                recurringDays = recurringDays.concat("TUE ");
-            }
-            if ((r & (1 << 4)) != 0) {
-                recurringDays = recurringDays.concat("WED ");
-            }
-            if ((r & (1 << 3)) != 0) {
-                recurringDays = recurringDays.concat("THU ");
-            }
-            if ((r & (1 << 2)) != 0) {
-                recurringDays = recurringDays.concat("FRI ");
-            }
-            if ((r & (1 << 1)) != 0) {
-                recurringDays = recurringDays.concat("SAT ");
-            }
-        }
-        holder.mSubTextView.setText(recurringDays);
-
-        //Delete item on long-press
+        });
         holder.mLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -239,7 +198,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                 deleter.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        fragment.deleteAlarm(position);
+                        parent.removeGroup(thisGroup.getName(), holder.getAdapterPosition());
                     }
                 });
                 deleter.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -252,11 +211,11 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                 return false;
             }
         });
-
         final SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(mContext);
         darkMode = prefs.getBoolean("dark_mode", false);
         if (darkMode) {
+            holder.percentageIndicatorText.setTextColor(Color.parseColor("#000000"));
             holder.mLinearLayout.setBackgroundColor(Color.parseColor("#000000"));
             holder.mTextView.setTextColor(Color.parseColor("#ffffff"));
         }
@@ -265,9 +224,8 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return scheduleList.size();
+        return lightList.size();
     }
-
 
     public void createDialog(final Context mContext, final int position){
         final Dialog dialog = new Dialog(mContext);
@@ -367,8 +325,17 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         color.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float xy[] = PHUtilities.calculateXY(currentColor, "LCT001");
-                setColor(xy[0], xy[1], position);
+                for (PHLight light : lightList.get(position).getLights()) {
+                    if (light.supportsColor()) {
+                        PHLightState lightState = new PHLightState();
+                        float[] xy = PHUtilities.calculateXY(currentColor, light.getModelNumber());
+                        lightState.setX(xy[0]);
+                        lightState.setY(xy[1]);
+                        lightState.setOn(true);
+                        mBridge.updateLightState(light, lightState);
+                        list.get(position).mLightSwitch.setChecked(true);
+                    }
+                }
                 dialog.cancel();
             }
         });
@@ -380,30 +347,8 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         lightState.setOn(true);
         lightState.setX(x);
         lightState.setY(y);
-        lightState.setBrightness(250);
-        scheduleList.get(position).setLightState(lightState);
-        float xy[] = new float[]{x,y};
-        list.get(position).mImageView.setColorFilter(PHUtilities.colorFromXY(xy, "LCT001"));
-        mBridge.updateSchedule(scheduleList.get(position), new PHScheduleListener() {
-            @Override
-            public void onCreated(PHSchedule phSchedule) {
-
-            }
-
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                System.out.println(s);
-            }
-
-            @Override
-            public void onStateUpdate(Map<String, String> map, List<PHHueError> list) {
-
-            }
-        });
+        mBridge.setLightStateForGroup(lightList.get(position).getIdentifier(), lightState);
+        list.get(position).mLightSwitch.setChecked(true);
     }
+
 }

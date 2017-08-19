@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Hue;
+package joelbryceanderson.com.bright.hue;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,8 +29,8 @@ import com.philips.lighting.model.PHHueParsingError;
 
 import java.util.List;
 
-import joelbryceanderson.com.bright.Activities.MainActivity;
-import joelbryceanderson.com.bright.Adapters.AccessPointListAdapter;
+import joelbryceanderson.com.bright.activities.MainActivity;
+import joelbryceanderson.com.bright.adapters.AccessPointListAdapter;
 import joelbryceanderson.com.bright.R;
 
 /**

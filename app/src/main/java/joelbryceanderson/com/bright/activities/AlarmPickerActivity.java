@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Activities;
+package joelbryceanderson.com.bright.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import joelbryceanderson.com.bright.Adapters.GroupPickerAdapter;
+import joelbryceanderson.com.bright.adapters.GroupPickerAdapter;
 import joelbryceanderson.com.bright.R;
 
 public class AlarmPickerActivity extends AppCompatActivity {

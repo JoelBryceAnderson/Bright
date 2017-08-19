@@ -1,4 +1,4 @@
-package joelbryceanderson.com.bright.Fragments;
+package joelbryceanderson.com.bright.fragments;
 
 
 import android.app.Fragment;
@@ -15,8 +15,8 @@ import com.philips.lighting.model.PHLight;
 
 import java.util.List;
 
-import joelbryceanderson.com.bright.Activities.MainActivity;
-import joelbryceanderson.com.bright.Adapters.RecyclerViewAdapterLights;
+import joelbryceanderson.com.bright.activities.MainActivity;
+import joelbryceanderson.com.bright.adapters.RecyclerViewAdapterLights;
 import joelbryceanderson.com.bright.R;
 
 
