@@ -20,13 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.Wearable;
 import com.google.gson.Gson;
 import com.philips.lighting.hue.listener.PHGroupListener;
 import com.philips.lighting.hue.sdk.PHHueSDK;
@@ -51,7 +44,6 @@ public class GroupPickerActivity extends AppCompatActivity {
     private GroupPickerAdapter adapter;
     private EditText editText;
     private FloatingActionButton fab;
-    private GoogleApiClient mGoogleApiClient;
     private PHHueSDK phHueSDK;
     private RecyclerView recyclerView;
 
@@ -68,24 +60,6 @@ public class GroupPickerActivity extends AppCompatActivity {
         //Set up the views
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_picker);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                    }
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult result) {
-                    }
-                })
-                .addApi(Wearable.API)
-                .build();
-        mGoogleApiClient.connect();
 
         phHueSDK = PHHueSDK.getInstance();
 
@@ -165,25 +139,6 @@ public class GroupPickerActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mGoogleApiClient.connect();
-    }
-
-
-    @Override
     public boolean onSupportNavigateUp() {
         //Finish activity if close button is pressed
         finish();
@@ -220,8 +175,6 @@ public class GroupPickerActivity extends AppCompatActivity {
                     prefsEditor.putStringSet("myGroups", set);
                     prefsEditor.putString(group.getName(), json);
                     prefsEditor.apply();
-
-                    syncDataItem(group.getName(), group.hasAnyColor());
                     finish();
                 }
 
@@ -285,24 +238,6 @@ public class GroupPickerActivity extends AppCompatActivity {
     public void showFab() {
         if (!adapter.getListToReturn().isEmpty() && !editText.getText().toString().matches("")) {
             fab.show();
-        }
-    }
-
-    private void syncDataItem(String name, boolean hasColor) {
-        if(mGoogleApiClient != null) {
-            final PutDataMapRequest putRequest = PutDataMapRequest.create("/GROUPS");
-            final DataMap map = putRequest.getDataMap();
-            map.putString("name", name);
-            map.putBoolean("hasColor", hasColor);
-            Wearable.DataApi.putDataItem(mGoogleApiClient,
-                    putRequest.asPutDataRequest().setUrgent()).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                @Override
-                public void onResult(@NonNull DataApi.DataItemResult dataItemResult) {
-                    Log.e("HEY!", dataItemResult.toString());
-                }
-            });
-        } else {
-            Log.e("HEY!", "HEY!");
         }
     }
 }
