@@ -98,44 +98,22 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         list.add(holder);
-        holder.percentageIndicatorFab.hide();
-        holder.percentageIndicatorFab.setElevation(4);
-        holder.percentageIndicatorWhole.setVisibility(View.GONE);
         holder.mTextView.setText(lightList.get(holder.getAdapterPosition()).getName());
-        holder.mLightSwitch.setOnCheckedChangeListener(null);
-        holder.mLightSwitch.setChecked(lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isOn());
-        holder.mLightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isReachable()) {
-                    if (isChecked) {
-                        holder.mBrightnessBar.setEnabled(true);
-                    } else {
-                        holder.mBrightnessBar.setEnabled(false);
-                    }
-                    PHLightState lightState = new PHLightState();
-                    lightState.setOn(isChecked);
-                    mBridge.updateLightState(lightList.get(holder.getAdapterPosition()), lightState);
-                } else {
-                    holder.mLightSwitch.setChecked(!isChecked);
-                    Snackbar snackbar = Snackbar.make(holder.mLinearLayout,
-                            "Light is not connected.", Snackbar.LENGTH_SHORT);
-                    snackbar.show();
-                }
-            }
-        });
+        if (lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isOn()) {
+            holder.mLightSwitch.setOnCheckedChangeListener(null);
+            holder.mLightSwitch.setChecked(true);
+        }
+        holder.mLightSwitch.setOnCheckedChangeListener(onSwitched(holder, position));
         if (lightList.get(holder.getAdapterPosition()).supportsColor()) {
             PHLightState state = lightList.get(holder.getAdapterPosition()).getLastKnownLightState();
             if (state.isReachable()) {
                 int color = PHUtilities.colorFromXY(new float[]{state.getX(), state.getY()}, "LCT001");
                 holder.mImageView.setColorFilter(color);
-                holder.mImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        createDialog(mContext, holder.getAdapterPosition());
-                    }
-                });
+                holder.mImageView.setOnClickListener(v -> createDialog(mContext, holder.getAdapterPosition(), holder));
             }
+        } else {
+            holder.mImageView.setColorFilter(null);
+            holder.mImageView.setOnClickListener(null);
         }
         if (!lightList.get(holder.getAdapterPosition()).getLastKnownLightState().isOn()) {
             holder.mBrightnessBar.setEnabled(false);
@@ -189,12 +167,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         });
         holder.mBrightnessBar.setEnabled(holder.mLightSwitch.isChecked());
 
-        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.mLightSwitch.toggle();
-            }
-        });
+        holder.mLinearLayout.setOnClickListener(v -> holder.mLightSwitch.toggle());
 
         final SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(mContext);
@@ -211,13 +184,33 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         }
     }
 
+    private CompoundButton.OnCheckedChangeListener onSwitched(ViewHolder holder, int position) {
+        return (buttonView, isChecked) -> {
+            if (lightList.get(position).getLastKnownLightState().isReachable()) {
+                if (isChecked) {
+                    holder.mBrightnessBar.setEnabled(true);
+                } else {
+                    holder.mBrightnessBar.setEnabled(false);
+                }
+                PHLightState lightState = new PHLightState();
+                lightState.setOn(isChecked);
+                mBridge.updateLightState(lightList.get(position), lightState);
+            } else {
+                holder.mLightSwitch.setChecked(!isChecked);
+                Snackbar snackbar = Snackbar.make(holder.mLinearLayout,
+                        "Light is not connected.", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+        };
+    }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return lightList.size();
     }
 
-    public void createDialog(final Context mContext, final int position){
+    public void createDialog(final Context mContext, final int position, ViewHolder holder){
         final Dialog dialog = new Dialog(mContext);
         dialog.setContentView(R.layout.color_picker_sliders);
 
@@ -237,7 +230,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         presetOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setColor(0.5134f, 0.4149f, position);
+                setColor(0.5134f, 0.4149f, position, holder);
                 dialog.cancel();
             }
         });
@@ -245,7 +238,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         presetTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setColor(0.4596f, 0.4105f, position);
+                setColor(0.4596f, 0.4105f, position, holder);
                 dialog.cancel();
             }
         });
@@ -254,7 +247,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         presetThree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setColor(0.4449f, 0.4066f,position);
+                setColor(0.4449f, 0.4066f,position, holder);
                 dialog.cancel();
             }
         });
@@ -263,7 +256,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         presetFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setColor(0.3693f, 0.3695f, position);
+                setColor(0.3693f, 0.3695f, position, holder);
                 dialog.cancel();
             }
         });
@@ -320,7 +313,7 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
                 lightState.setX(xy[0]);
                 lightState.setY(xy[1]);
                 mBridge.updateLightState(lightList.get(position), lightState);
-                list.get(position).mImageView.setColorFilter(currentColor);
+                holder.mImageView.setColorFilter(currentColor);
                 dialog.cancel();
             }
         });
@@ -333,13 +326,13 @@ public class RecyclerViewAdapterLights extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-    private void setColor(float x, float y, int position) {
+    private void setColor(float x, float y, int position, ViewHolder holder) {
         PHLightState lightState = new PHLightState();
         lightState.setOn(true);
         lightState.setX(x);
         lightState.setY(y);
         mBridge.updateLightState(lightList.get(position), lightState);
-        list.get(position).mImageView.setColorFilter(
+        holder.mImageView.setColorFilter(
                 PHUtilities.colorFromXY(new float[]{x, y}, "LCT001"));
     }
 }

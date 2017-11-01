@@ -163,62 +163,59 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         edit.apply();
         phHueSDK.getSelectedBridge().deleteGroup(group.getIdentifier(), null);
         Snackbar snackbar = Snackbar.make(frameLayout, "Group deleted",
-                Snackbar.LENGTH_SHORT).setAction("Undo", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                noItemsCard.setVisibility(View.GONE);
-                Snackbar snackbar1 = Snackbar.make(
-                        frameLayout, "Group restored", Snackbar.LENGTH_SHORT);
-                snackbar1.show();
-                lightGroupList.add(position, group);
-                stringSet.add(name);
-                SharedPreferences.Editor edit = appSharedPrefs.edit();
-                edit.putStringSet("myGroups", stringSet);
-                edit.putString(name, contents);
-                adapter.notifyItemInserted(position);
-                PHGroup newGroup = new PHGroup();
-                List<String> lightIdentifiers = new ArrayList<>();
+                Snackbar.LENGTH_SHORT).setAction("Undo", v -> {
+                    noItemsCard.setVisibility(View.GONE);
+                    Snackbar snackbar1 = Snackbar.make(
+                            frameLayout, "Group restored", Snackbar.LENGTH_SHORT);
+                    snackbar1.show();
+                    lightGroupList.add(position, group);
+                    stringSet.add(name);
+                    SharedPreferences.Editor edit1 = appSharedPrefs.edit();
+                    edit1.putStringSet("myGroups", stringSet);
+                    edit1.putString(name, contents);
+                    adapter.notifyItemInserted(position);
+                    PHGroup newGroup = new PHGroup();
+                    List<String> lightIdentifiers = new ArrayList<>();
 
-                for (PHLight light : group.getLights()) {
-                    lightIdentifiers.add(light.getIdentifier());
-                }
-
-                newGroup.setLightIdentifiers(lightIdentifiers);
-                phHueSDK.getSelectedBridge().createGroup(newGroup, new PHGroupListener() {
-                    @Override
-                    public void onCreated(PHGroup phGroup) {
-                        group.setIdentifier(phGroup.getIdentifier());
+                    for (PHLight light : group.getLights()) {
+                        lightIdentifiers.add(light.getIdentifier());
                     }
 
-                    @Override
-                    public void onReceivingGroupDetails(PHGroup phGroup) {
+                    newGroup.setLightIdentifiers(lightIdentifiers);
+                    phHueSDK.getSelectedBridge().createGroup(newGroup, new PHGroupListener() {
+                        @Override
+                        public void onCreated(PHGroup phGroup) {
+                            group.setIdentifier(phGroup.getIdentifier());
+                        }
 
-                    }
+                        @Override
+                        public void onReceivingGroupDetails(PHGroup phGroup) {
 
-                    @Override
-                    public void onReceivingAllGroups(List<PHBridgeResource> list) {
+                        }
 
-                    }
+                        @Override
+                        public void onReceivingAllGroups(List<PHBridgeResource> list) {
 
-                    @Override
-                    public void onSuccess() {
+                        }
 
-                    }
+                        @Override
+                        public void onSuccess() {
 
-                    @Override
-                    public void onError(int i, String s) {
+                        }
 
-                    }
+                        @Override
+                        public void onError(int i, String s) {
 
-                    @Override
-                    public void onStateUpdate(Map<String, String> map, List<PHHueError> list) {
+                        }
 
-                    }
+                        @Override
+                        public void onStateUpdate(Map<String, String> map, List<PHHueError> list) {
+
+                        }
+                    });
+
+                    edit1.apply();
                 });
-
-                edit.apply();
-            }
-        });
         snackbar.show();
         if (adapter.getItemCount() == 0) {
             noItemsCard.setVisibility(View.VISIBLE);

@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,9 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import joelbryceanderson.com.bright.R;
 import joelbryceanderson.com.bright.fragments.GroupsFragment;
 import joelbryceanderson.com.bright.model.LightGroup;
-import joelbryceanderson.com.bright.R;
 
 /**
  * Created by Joel Anderson on 2/11/16.
@@ -119,19 +118,16 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
         holder.mLightSwitch.setChecked(false);
         holder.mBrightnessBar.setEnabled(false);
         holder.mTextView.setText(thisGroup.getName());
-        holder.mLightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PHLightState state = new PHLightState();
-                if (isChecked) {
-                    state.setOn(true);
-                    holder.mBrightnessBar.setEnabled(true);
-                } else {
-                    state.setOn(false);
-                    holder.mBrightnessBar.setEnabled(false);
-                }
-                mBridge.setLightStateForGroup(thisGroup.getIdentifier(), state);
+        holder.mLightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            PHLightState state = new PHLightState();
+            if (isChecked) {
+                state.setOn(true);
+                holder.mBrightnessBar.setEnabled(true);
+            } else {
+                state.setOn(false);
+                holder.mBrightnessBar.setEnabled(false);
             }
+            mBridge.setLightStateForGroup(thisGroup.getIdentifier(), state);
         });
         holder.mBrightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -183,33 +179,25 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
             });
         }
 
-        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.mLightSwitch.toggle();
-            }
-        });
-        holder.mLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                final AlertDialog.Builder deleter = new AlertDialog.Builder(mContext);
-                deleter.setTitle("Delete");
-                deleter.setMessage("Would you like to delete this group?");
-                deleter.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        parent.removeGroup(thisGroup.getName(), holder.getAdapterPosition());
-                    }
-                });
-                deleter.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                deleter.show();
-                return false;
-            }
+        holder.mLinearLayout.setOnClickListener(v -> holder.mLightSwitch.toggle());
+        holder.mLinearLayout.setOnLongClickListener(v -> {
+            final AlertDialog.Builder deleter = new AlertDialog.Builder(mContext);
+            deleter.setTitle("Delete");
+            deleter.setMessage("Would you like to delete this group?");
+            deleter.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    parent.removeGroup(thisGroup.getName(), holder.getAdapterPosition());
+                }
+            });
+            deleter.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            deleter.show();
+            return false;
         });
         final SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(mContext);
